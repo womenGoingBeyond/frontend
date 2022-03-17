@@ -5,7 +5,9 @@ export default function Home() {
     const TYPE = 'sfwd-courses';
     const URL = `${ process.env.REACT_APP_WP_DOMAIN }/${ process.env.REACT_APP_LD_EXT }/${ TYPE }`;
 
-    fetch(URL)
+    fetch(URL, {
+      mode: 'no-cors'
+    })
       .then(response => response.json())
       .then(data => {
         for (const course of data) {
