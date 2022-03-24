@@ -1,20 +1,13 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 export default function Home() {
-  useEffect(() => {
-    const TYPE = 'sfwd-courses'
-    const URL = `${process.env.REACT_APP_WP_DOMAIN}/${process.env.REACT_APP_LD_EXT}/${TYPE}`
+  let navigate = useNavigate()
 
-    /*    fetch(URL, {
-          mode: 'no-cors'
-        })
-          .then(response => response.json())
-          .then(data => {
-            for (const course of data) {
-              console.log('course', course)
-            }
-          })
-          .catch(console.error)*/
+  useEffect(() => {
+    window.localStorage.clear()
+
+    navigate('/login')
   }, [])
 
   return (

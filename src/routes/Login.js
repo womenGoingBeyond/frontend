@@ -1,28 +1,25 @@
 import styles from '../styles/routes/login.module.css'
 import { Alert, Button, Snackbar, TextField } from '@mui/material'
 import { useRef, useState } from 'react'
+import auth from '../components/Auth'
+import { useNavigate } from 'react-router'
 
 export default function Login() {
   const [snackbarObject, setSnackbarObject] = useState({})
   const emailRef = useRef()
   const passwordRef = useRef()
+  const navigate = useNavigate()
 
-  const loginUser = ({email, password}) => {
-    const TYPE = 'sfwd-courses'
-    const URL = `${process.env.REACT_APP_WP_DOMAIN}/${process.env.REACT_APP_LD_EXT}/${TYPE}`
-
-    fetch(URL, {
-      mode: 'no-cors'
-    })
-      .then(response => response.json())
-      .then(data => {
-        for (const course of data) {
-          console.log('course', course)
-        }
-      })
-      .catch(console.error)
-
-    console.log('login')
+  const loginUser = async () => {
+    const {jwt, success} = await auth({email: emailRef.current.value, password: passwordRef.current.value})
+    if (success) {
+      // TODO: redirect to list courses
+      window.localStorage.setItem('wgb-jwt', jwt)
+      navigate('/courses')
+    } else {
+      console.log('wrong credentials')
+      // TODO: invoke handleSnackbar for err msg
+    }
   }
 
   const handleSubmit = () => {
@@ -81,7 +78,7 @@ export default function Login() {
           type="password"
           variant="standard"
           inputRef={passwordRef}
-          inputProps={{minLength: 6}}
+          inputProps={{minLength: 4}}
         />
         <Button
           variant="contained"
