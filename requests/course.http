@@ -1,0 +1,37 @@
+# @name get all courses - no authentication
+GET http://{{domain}}/api/courses
+Accept: application/json
+Content-Type:application/json
+
+###
+
+# @name get all courses
+GET http://{{domain}}/api/courses
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course by id
+GET http://{{domain}}/api/courses/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get all lessons of a course
+GET http://{{domain}}/api/courses/{{course_id}}?populate[0]=lessons
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# this kind of population is not performant and should be avoided
+# @name get all topics populated from a course
+GET http://{{domain}}/api/courses/{{course_id}}?populate[lessons][populate][0]=topics
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}

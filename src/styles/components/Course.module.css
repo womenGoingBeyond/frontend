@@ -1,0 +1,11 @@
+.course {
+  width: 95%;
+  height: 100%;
+  display: flex;
+  margin: 2rem 0 0;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, .5);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, .03);
+
+}

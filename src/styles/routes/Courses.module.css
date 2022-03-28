@@ -1,0 +1,16 @@
+.main {
+  width: 100vw;
+  min-height: 100vh;
+  height: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.courses {
+  width: 90%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
