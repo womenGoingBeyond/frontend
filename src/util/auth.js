@@ -1,3 +1,5 @@
+import jwt_decode from "jwt-decode";
+
 export default class Auth {
   static baseURL = process.env.NODE_ENV === 'production'
     ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
@@ -38,5 +40,17 @@ export default class Auth {
     }
 
     return false
+  }
+
+  /**
+   *
+   * @return {number}
+   */
+  static getUserIdFromJWT() {
+    const token = window.localStorage.getItem('wgb-jwt')
+    if (token === null) return 0
+
+    const decoded = jwt_decode(token);
+    return decoded.id
   }
 }

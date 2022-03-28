@@ -1,30 +1,26 @@
 export default class Api {
+  static baseURL = process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
+
   /**
    *
-   * @param url {string}
-   * @param id {number}
+   * @param endpoint {string}
    * @param param {string}
    * @return {Promise<object>}
    */
-  static async get(url, id = NaN, param = '') {
-    if (!url || typeof url !== 'string') return
+  static async get(endpoint, param = '') {
+    if (!endpoint || typeof endpoint !== 'string') return
 
-    const baseURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_WP_DOMAIN : process.env.REACT_APP_DEV_WP_DOMAIN
-    let response, data, extension = ''
-
+    let response, data
     const storedToken = window.localStorage.getItem('wgb-jwt')
 
     /* check if token is present in localStorage else return an empty object*/
     if (storedToken === null) {
       return {msg: 'no jwt'}
     }
-    
-    if (!Number.isNaN(id) && typeof id === 'number') {
-      extension = `${id}/${param}`
-    }
 
     try {
-      response = await fetch(`${baseURL}/wp-json/${url}/${extension}`, {
+      response = await fetch(`${this.baseURL}/${endpoint}/${param}`, {
         method: 'GET',
         mode: 'cors',
         headers: new Headers({

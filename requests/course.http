@@ -13,6 +13,14 @@ Authorization: Bearer {{jwt}}
 
 ###
 
+# @name sort courses on id parameter
+GET http://{{domain}}/api/courses?sort[0]=id
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
 # @name get course by id
 GET http://{{domain}}/api/courses/1
 Accept: application/json
@@ -32,6 +40,14 @@ Authorization: Bearer {{jwt}}
 # this kind of population is not performant and should be avoided
 # @name get all topics populated from a course
 GET http://{{domain}}/api/courses/{{course_id}}?populate[lessons][populate][0]=topics
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get all courses of a user
+GET http://{{domain}}/api/courses/{{course_id}}?populate=[users]&filters[users][id][$eq]={{user_id}}
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
