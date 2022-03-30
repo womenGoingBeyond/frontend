@@ -10,10 +10,13 @@ export default function Login() {
   const emailRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
+  const location = useNavigate()
 
   /**
    *
-   * @param {object} credentials
+   * @async
+   * @param {string} email
+   * @param {string} password
    * @returns {Promise<void>}
    */
   async function loginUser({email, password}) {
@@ -24,10 +27,12 @@ export default function Login() {
 
     if (Object.keys(response).includes('error')) {
       //TODO: invoke handleSnackbar for err msg
-      console.log('wrong credentials', response.error)
+      console.log('wrong credentials', response)
     } else {
-      window.localStorage.setItem('wgb-jwt', response.jwt)
-      navigate('/courses')
+      window.sessionStorage.setItem('wgb-jwt', response.jwt)
+      // remove login route from the history stack
+      let from = location.state?.from?.pathname || '/'
+      navigate(from, {replace: true})
     }
   }
 
@@ -42,8 +47,8 @@ export default function Login() {
 
   /**
    *
-   * @param {string} email
-   * @param {string} password
+   * @param {HTMLInputElement} email
+   * @param {HTMLInputElement} password
    * @returns {boolean}
    */
   function validateInput({email, password}) {
@@ -74,10 +79,11 @@ export default function Login() {
   }
 
   /**
+   * The **handleSnackbar** function is a template for setting the _snackbarObject_ state.
    *
-   * @param open
-   * @param message
-   * @param severity
+   * @param {boolean} open triggers the open or the close state of snackbar
+   * @param {string} message the message to be shown in UI
+   * @param {string} severity kind of message
    */
   function handleSnackbar({open, message, severity}) {
     setSnackbarObject({open, message, severity})
