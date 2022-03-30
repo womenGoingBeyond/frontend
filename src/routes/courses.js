@@ -3,7 +3,8 @@ import Api from '../util/api'
 import Skeleton from '@mui/material/Skeleton'
 import Course from '../components/Course'
 import styles from '../styles/routes/courses.module.css'
-import Auth from "../util/auth";
+import Auth from '../util/auth'
+import Header from '../components/Header'
 
 export default function Courses() {
   const [courses, setCourses] = useState([])
@@ -45,6 +46,7 @@ export default function Courses() {
 
   return (
     <>
+      <Header/>
       <main className={styles.main}>
         <h1>Courses</h1>
         <section className={styles.courses}>

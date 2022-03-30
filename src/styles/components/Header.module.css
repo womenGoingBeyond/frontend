@@ -1,0 +1,11 @@
+.header {
+    width: 100%;
+    height: auto;
+    min-height: 50px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: blue;
+    padding: 10px 0;
+}
