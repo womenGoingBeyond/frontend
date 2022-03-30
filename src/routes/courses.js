@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import Api from '../util/api'
 import Skeleton from '@mui/material/Skeleton'
 import Course from '../components/Course'
-import styles from '../styles/routes/Courses.module.css'
+import styles from '../styles/routes/courses.module.css'
 import Auth from "../util/auth";
 
 export default function Courses() {
