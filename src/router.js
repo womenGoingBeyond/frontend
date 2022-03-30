@@ -2,7 +2,8 @@ import {Route, Routes} from 'react-router-dom'
 import App from './App'
 import Login from './routes/login'
 import Courses from './routes/courses'
-import Register from "./routes/register";
+import Register from './routes/register'
+import AuthMiddleware from './components/AuthMiddleware'
 
 export default function router() {
   return (
@@ -21,7 +22,11 @@ export default function router() {
       />
       <Route
         path="courses"
-        element={<Courses/>}
+        element={
+          <AuthMiddleware>
+            <Courses/>
+          </AuthMiddleware>
+        }
       />
     </Routes>
   )

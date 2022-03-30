@@ -12,9 +12,9 @@ export default class Api {
     if (!endpoint || typeof endpoint !== 'string') return
 
     let response, data
-    const storedToken = window.localStorage.getItem('wgb-jwt')
+    const storedToken = window.sessionStorage.getItem('wgb-jwt')
 
-    /* check if token is present in localStorage else return an empty object*/
+    /* check if token is present in sessionStorage else return an empty object*/
     if (storedToken === null) {
       return {msg: 'no jwt'}
     }
