@@ -2,7 +2,8 @@ import styles from '../styles/routes/login.module.css'
 import {Alert, Button, Snackbar, TextField} from '@mui/material'
 import {useRef, useState} from 'react'
 import Auth from '../util/auth'
-import {useNavigate} from "react-router";
+import {useNavigate} from 'react-router'
+import {Link} from 'react-router-dom'
 
 export default function Login() {
   const [snackbarObject, setSnackbarObject] = useState({})
@@ -86,6 +87,10 @@ export default function Login() {
       <div className={styles.container}>
         <div className={styles.logo}/>
         <h1 children={'App Name'}/>
+        <p className={styles.register}>
+          Don't have an account?
+          <Link to={'/register'} className={styles.registerLink}>register</Link>
+        </p>
         {/* TODO: use Stack for form elements */}
         <div className={styles.form}>
           <TextField
