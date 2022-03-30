@@ -61,6 +61,10 @@ export default class Auth {
   }
 
   /**
+   * The **logout** method logs the user out through deleting the jwt from localStorage.
+   *
+   * @see https://github.com/strapi/strapi-examples/blob/master/login-react/src/pages/Home.js#L28
+   * @see https://forum.strapi.io/t/does-strapi-has-a-logout-endpoint/14886
    *
    * @returns {boolean}
    */
