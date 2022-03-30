@@ -13,7 +13,6 @@ export default function Login() {
   const location = useNavigate()
 
   /**
-   *
    * @async
    * @param {string} email
    * @param {string} password
@@ -26,8 +25,7 @@ export default function Login() {
     })
 
     if (Object.keys(response).includes('error')) {
-      //TODO: invoke handleSnackbar for err msg
-      console.log('wrong credentials', response)
+      handleSnackbar({open: true, message: response.error.message, severity: 'error'})
     } else {
       window.sessionStorage.setItem('wgb-jwt', response.jwt)
       // remove login route from the history stack
@@ -36,9 +34,6 @@ export default function Login() {
     }
   }
 
-  /**
-   *
-   */
   function handleSubmit() {
     const email = emailRef.current.value, password = passwordRef.current.value
     const isValid = validateInput({email: emailRef.current, password: passwordRef.current})
@@ -46,7 +41,6 @@ export default function Login() {
   }
 
   /**
-   *
    * @param {HTMLInputElement} email
    * @param {HTMLInputElement} password
    * @returns {boolean}
@@ -68,10 +62,7 @@ export default function Login() {
     handleSnackbar({open: snackbarObject.open, message: '', severity: 'success'})
     return true
   }
-
-  /**
-   *
-   */
+  
   function handleCloseSnackbar() {
     handleSnackbar({
       open: false, message: '', severity: snackbarObject.severity

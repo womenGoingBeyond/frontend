@@ -20,6 +20,7 @@ export default function Register() {
    * This function does not validate the user credentials. The credentials have to be validated before invoking this
    * function.
    *
+   * @async
    * @returns {Promise<void>}
    */
   async function registerUser() {
