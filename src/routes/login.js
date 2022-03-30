@@ -21,11 +21,12 @@ export default function Login() {
       identifier: email,
       password: password
     })
-    if ('error' in response.data) {
+
+    if (Object.keys(response).includes('error')) {
       //TODO: invoke handleSnackbar for err msg
-      console.log('wrong credentials', response.data)
+      console.log('wrong credentials', response.error)
     } else {
-      window.localStorage.setItem('wgb-jwt', response.data.jwt)
+      window.localStorage.setItem('wgb-jwt', response.jwt)
       navigate('/courses')
     }
   }

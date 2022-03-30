@@ -17,7 +17,7 @@ export default class Auth {
    * @returns {Promise<{data: object}>}
    */
   static async register({email, password}) {
-    const url = `${this.baseURL}/api/auth/local/register?fields[0]=user `
+    const url = `${this.baseURL}/api/auth/local/register`
 
     const response = await fetch(url, {
       method: 'POST',
@@ -38,6 +38,7 @@ export default class Auth {
 
   /**
    *
+   * @async
    * @param {string} identifier
    * @param {string} password
    * @returns {Promise<{data: object}>}
