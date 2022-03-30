@@ -41,7 +41,7 @@ export default class Auth {
    * @async
    * @param {string} identifier
    * @param {string} password
-   * @returns {Promise<{data: object}>}
+   * @returns {Promise<{data: {jwt: string, user: {}}, error: object}>}
    */
   static async login({identifier, password}) {
     const url = `${this.baseURL}/api/auth/local`

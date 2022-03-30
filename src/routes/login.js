@@ -13,7 +13,8 @@ export default function Login() {
 
   /**
    *
-   * @param {object} credentials
+   * @param {string} email
+   * @param {string} password
    * @returns {Promise<void>}
    */
   async function loginUser({email, password}) {
@@ -28,6 +29,9 @@ export default function Login() {
     } else {
       window.localStorage.setItem('wgb-jwt', response.jwt)
       navigate('/courses')
+      // remove login route from the history stack
+      navigate('/courses', {replace: true})
+
     }
   }
 
