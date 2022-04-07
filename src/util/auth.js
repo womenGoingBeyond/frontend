@@ -34,7 +34,7 @@ export default class Auth {
         'password': password
       })
     })
-    return await response.json()
+    return response.json()
   }
 
   /**
@@ -60,7 +60,7 @@ export default class Auth {
         'password': password
       })
     })
-    return await response.json()
+    return response.json()
   }
 
   /**
