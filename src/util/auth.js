@@ -18,7 +18,7 @@ export default class Auth {
    * @param {string} password
    * @returns {Promise<{jwt: string, user: {}, error: {}}>}
    */
-  static async register({email, password}) {
+  static async register({ email, password }) {
     const url = `${this.baseURL}/api/auth/local/register`
 
     const response = await fetch(url, {
@@ -35,7 +35,7 @@ export default class Auth {
         'blocked': true
       })
     })
-    return await response.json()
+    return response.json()
   }
 
   /**
@@ -46,7 +46,7 @@ export default class Auth {
    * @param {string} password
    * @returns {Promise<{jwt: string, user: {}, error: {}}>}
    */
-  static async login({identifier, password}) {
+  static async login({ identifier, password }) {
     const url = `${this.baseURL}/api/auth/local`
 
     const response = await fetch(url, {
@@ -61,7 +61,7 @@ export default class Auth {
         'password': password
       })
     })
-    return await response.json()
+    return response.json()
   }
 
   /**
