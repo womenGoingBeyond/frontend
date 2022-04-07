@@ -7,6 +7,20 @@ Content-Type: application/json
   "name": "Joe Biden",
   "password": "{{password}}",
   "email": "{{identifier}}",
+  "username": "sleepy"
+}
+
+###
+
+# @name blocked user registration
+POST http://{{domain}}/api/auth/local/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Joe Biden",
+  "password": "{{password}}",
+  "email": "{{identifier}}",
   "username": "sleepy",
   "blocked": true
 }
