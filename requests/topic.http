@@ -1,0 +1,27 @@
+# @name mark topic as complete
+PUT http://{{domain}}/api/user-topic-states/9
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "data": {
+    "done": true
+  }
+}
+
+###
+
+# @name mark topic as not completed
+PUT http://{{domain}}/api/user-topic-states/10
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "data": {
+    "done": false
+  }
+}
+
+###

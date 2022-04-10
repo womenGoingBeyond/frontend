@@ -51,3 +51,18 @@ GET http://{{domain}}/api/courses/{{course_id}}?populate=[users]&filters[users][
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
+
+###
+
+# @name register an user for a course
+PUT http://{{domain}}/api/course/{{course_id}}/register
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name register an unauthorized user for a course
+PUT http://{{domain}}/api/course/{{course_id}}/register
+Accept: application/json
+Content-Type: application/json
