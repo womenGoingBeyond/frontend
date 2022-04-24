@@ -1,0 +1,41 @@
+###
+### All requests for downloading a course and its all assets and relations
+###
+
+# @name get course metadata
+GET http://{{domain}}/api/courses/{{course_id}}/meta
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name lesson populate everything
+GET http://{{domain}}/api/lessons/{{course_id}}?populate=*
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course's lessons
+GET http://{{domain}}/api/lessons/1?populate[Content][populate][Media][fields][0]=url
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get lessons topics
+GET http://{{domain}}/api/topics/1?populate[Content][populate][Media][fields][0]=url
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get lessons topics
+GET http://{{domain}}/api/topics/1?populate[Content][populate][Media][fields][0]=url&populate[user_topic_states]=*
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}

@@ -1,16 +1,15 @@
 import styles from '../styles/routes/login.module.css'
-import {Alert, Button, Snackbar, TextField} from '@mui/material'
-import {useRef, useState} from 'react'
+import { Alert, Button, Snackbar, TextField } from '@mui/material'
+import { useRef, useState } from 'react'
 import Auth from '../util/auth'
-import {useNavigate} from 'react-router'
-import {Link} from 'react-router-dom'
+import { useNavigate } from 'react-router'
+import { Link } from 'react-router-dom'
 
 export default function Login() {
   const [snackbarObject, setSnackbarObject] = useState({})
   const emailRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
-  const location = useNavigate()
 
   /**
    * @async
@@ -18,26 +17,26 @@ export default function Login() {
    * @param {string} password
    * @returns {Promise<void>}
    */
-  async function loginUser({email, password}) {
+  async function loginUser({ email, password }) {
     const response = await Auth.login({
       identifier: email,
       password: password
     })
 
     if (Object.keys(response).includes('error')) {
-      handleSnackbar({open: true, message: response.error.message, severity: 'error'})
+      handleSnackbar({ open: true, message: response.error.message, severity: 'error' })
     } else {
       window.sessionStorage.setItem('wgb-jwt', response.jwt)
       // remove login route from the history stack
-      let from = location.state?.from?.pathname || '/'
-      navigate(from, {replace: true})
+      let from = navigate.state?.from?.pathname || '/'
+      navigate(from, { replace: true })
     }
   }
 
   function handleSubmit() {
     const email = emailRef.current.value, password = passwordRef.current.value
-    const isValid = validateInput({email: emailRef.current, password: passwordRef.current})
-    isValid && loginUser({email, password}).catch(console.error)
+    const isValid = validateInput({ email: emailRef.current, password: passwordRef.current })
+    isValid && loginUser({ email, password }).catch(console.error)
   }
 
   /**
@@ -45,24 +44,24 @@ export default function Login() {
    * @param {HTMLInputElement} password
    * @returns {boolean}
    */
-  function validateInput({email, password}) {
+  function validateInput({ email, password }) {
     if (email.validity.valueMissing || password.validity.valueMissing) {
-      handleSnackbar({open: true, message: 'Please give an email/password.', severity: 'error'})
+      handleSnackbar({ open: true, message: 'Please give an email/password.', severity: 'error' })
       return false
     }
     if (!email.validity.valid) {
-      handleSnackbar({open: true, message: 'email is not valid', severity: 'error'})
+      handleSnackbar({ open: true, message: 'email is not valid', severity: 'error' })
       return false
     }
     if (password.validity.tooShort) {
-      handleSnackbar({open: true, message: 'too short password', severity: 'error'})
+      handleSnackbar({ open: true, message: 'too short password', severity: 'error' })
       return false
     }
 
-    handleSnackbar({open: snackbarObject.open, message: '', severity: 'success'})
+    handleSnackbar({ open: snackbarObject.open, message: '', severity: 'success' })
     return true
   }
-  
+
   function handleCloseSnackbar() {
     handleSnackbar({
       open: false, message: '', severity: snackbarObject.severity
@@ -76,8 +75,8 @@ export default function Login() {
    * @param {string} message the message to be shown in UI
    * @param {string} severity kind of message
    */
-  function handleSnackbar({open, message, severity}) {
-    setSnackbarObject({open, message, severity})
+  function handleSnackbar({ open, message, severity }) {
+    setSnackbarObject({ open, message, severity })
   }
 
   return (
@@ -110,12 +109,12 @@ export default function Login() {
             type="password"
             variant="standard"
             inputRef={passwordRef}
-            inputProps={{minLength: 4}}
+            inputProps={{ minLength: 4 }}
           />
           <Button
             variant="contained"
             children={'Login'}
-            sx={{marginTop: '4rem'}}
+            sx={{ marginTop: '4rem' }}
             onClick={handleSubmit}
           />
         </div>
@@ -123,14 +122,14 @@ export default function Login() {
       <Snackbar
         open={snackbarObject.open}
         autoHideDuration={3000}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         onClose={handleCloseSnackbar}
       >
         <Alert
           onClose={handleCloseSnackbar}
           variant="filled"
           severity={snackbarObject.severity}
-          sx={{width: '100%'}}
+          sx={{ width: '100%' }}
           children={snackbarObject.message}
         />
       </Snackbar>

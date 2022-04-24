@@ -3,9 +3,55 @@
   height: 100%;
   display: flex;
   margin: 2rem 0 0;
-  padding: 1rem;
+  padding: 3rem 1rem 1rem;
   border: 1px solid rgba(0, 0, 0, .5);
   border-radius: 5px;
-  background-color: rgba(0, 0, 0, .03);
+}
 
+.courseShort {
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.overview {
+  flex-flow: column nowrap;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.img {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.img > img {
+  width: 70vw;
+  height: 50vw;
+}
+
+.description {
+  width: 100%;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 1rem 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, .35)
+}
+
+.footer > * {
+  font-size: 24px;
+  color: #ce6328;
 }

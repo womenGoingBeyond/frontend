@@ -17,6 +17,7 @@ export default function Header() {
         <Button variant="contained" onClick={logoutUser} sx={{marginRight: '1rem'}} disableElevation>
           LOG OUT
         </Button>
+        {/* TODO: add a refresh icon to pull content from cms */}
       </header>
     </>
   )
