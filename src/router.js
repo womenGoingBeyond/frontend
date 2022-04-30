@@ -33,7 +33,7 @@ export default function router() {
 }
 
 // courses (list all courses)
-//    courses/:courseId/ (list all lessons)
-//        lessons/:lessonIs (list all topics and quizzes)
-//            topics/:topicsId  (display topic)
-//            quizzes/:quizId   (display quiz)
+//    courses/:courseId/ (list course with courseId and all his lessons)
+//        lessons/:lessonIs (list lesson with the lessonId and all his topics and quizzes)
+//            topics/:topicsId  (display topic with the topicId)
+//            quizzes/:quizId   (display quiz with the quizId)

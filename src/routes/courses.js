@@ -42,7 +42,7 @@ export default function Courses() {
   return (
     <>
       <Header/>
-      <main className={styles.main}>
+      <main>
         <h1>Courses</h1>
         <section className={styles.courses}>
           {courses.length > 0

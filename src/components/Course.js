@@ -1,52 +1,51 @@
 import PropTypes from 'prop-types'
 import styles from '../styles/components/Course.module.css'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import Api from '../util/api'
 import DownloadIcon from '@mui/icons-material/Download'
+import DownloadDoneIcon from '@mui/icons-material/DownloadDone'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Auth from '../util/auth'
 
 export default function Course({ course, keyValue, userCourse, cacheName }) {
   const [progress, setProgress] = useState(0)
   const [showMore, setShowMore] = useState(false)
-  const [downloadRequests, setDownloadRequests] = useState({})
   const [isUserCourse, setIsUserCourse] = useState(userCourse)
-  const baseURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
+  const [isCourseDownloaded, setIsCourseDownloaded] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // check if the course is already downloaded
+    caches.has(`dl-course-${course.id}`)
+      .then(hasCache => setIsCourseDownloaded(hasCache))
+      .catch(console.error)
+
+    // listen to messages
+    navigator.serviceWorker.onmessage = (event) => {
+      if (event.data && event.data.type === 'DOWNLOAD_COMPLETED') {
+        console.log('done')
+        updateDownloadState(true)
+      }
+
+      if (event.data && event.data.type === 'DOWNLOAD_DELETED') {
+        updateDownloadState(false)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (isUserCourse) {
-      Promise.allSettled([
-        fetchCourseProgress(),
-        fetchCourseMetadata()
-      ])
+      fetchCourseProgress()
         .catch(console.error)
     }
   }, [isUserCourse])
 
-  const fetchCourseProgress = () => {
-    return Api.get(`api/user-course-progresses/${course.id}`)
-      .then(response => setProgress(response.data.progress))
-      .catch(console.error)
-  }
+  const updateDownloadState = (state) => setIsCourseDownloaded(state)
 
-  const fetchCourseMetadata = () => {
-    return Api.get(`api/courses/${course.id}/meta`)
-      .then(response => {
-        let requests = response.data.requests.map(request => {
-          if (request.startsWith('/')) {
-            return new Request(`${baseURL}${request}`, {
-              method: 'GET',
-              mode: 'cors',
-              headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${window.sessionStorage.getItem('wgb-jwt')}`
-              })
-            })
-          } else {
-            return new Request(request)
-          }
-        }).filter(Boolean)
-        setDownloadRequests(requests)
-      })
+  const fetchCourseProgress = () => {
+    return Api.get(`api/user-course-progresses?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][course][id][$eq]=${course.id}`)
+      .then(response => setProgress(response.data[0].progress * 100))
       .catch(console.error)
   }
 
@@ -62,39 +61,35 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
         .then(() => setIsUserCourse(true))
         .catch(console.error)
     } else {
-      console.log('%c continue the course', 'color: red')
+      navigate(`/courses/${course.id}`)
     }
   }
 
-  const buttonClickHandler = (event) => {
-    event.preventDefault()
+  // check for background fetch API support
+  const downloadCourse = (event) => {
     event.stopPropagation()
-
-    downloadCourse()
-      .catch(console.error)
+    event.preventDefault()
+    fallbackFetch()
+    setIsCourseDownloaded(true)
   }
 
-  /**
-   * @return {Promise<void>}
-   */
-  const downloadCourse = async () => {
-    // check for background fetch API support
-    return fallbackFetch()
+  const removeDownloadedCourse = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+    console.log('delete')
+    navigator.serviceWorker.controller.postMessage({
+      type: 'DELETE_COURSE',
+      id: course.id,
+    })
   }
 
-  /**
-   * @return {Promise<void>}
-   */
-  const fallbackFetch = async () => {
-    try {
-      const cache = await caches.open(`course-${course.id}`)
-      let _ = downloadRequests.map(async request => {
-        let response = await fetch(request)
-        return await cache.put(request, response)
-      })
-    } catch (e) {
-      console.error(e)
-    }
+  const fallbackFetch = () => {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'DOWNLOAD_COURSE',
+      id: course.id,
+      baseURL: process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN,
+      jwt: window.sessionStorage.getItem('wgb-jwt')
+    })
   }
 
   return (
@@ -128,7 +123,18 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
             <p>{course.Description.length ? course.Description : ''}</p>
           </div>
           <div className={styles.footer}>
-            {isUserCourse ? <DownloadIcon onClick={buttonClickHandler}/> : null}
+            {isUserCourse ?
+              <div>
+                {isCourseDownloaded ?
+                  <div>
+                    <DownloadDoneIcon/>
+                    <DeleteIcon onClick={removeDownloadedCourse}/>
+                  </div>
+                  : <DownloadIcon onClick={downloadCourse}/>
+                }
+              </div>
+              : null
+            }
             <span onClick={registerOrContinueHandler}>{isUserCourse ? 'continue' : 'start'}</span>
           </div>
         </div>
@@ -137,14 +143,11 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           id={`course-${course.id}`}
           className={[styles.course, styles.courseShort].join(' ')}
           key={keyValue}
-          style={{
-            backgroundColor: course.category.Color || '#aaa'
-          }}
+          style={{ backgroundColor: course.category.Color || '#aaa' }}
           onClick={showMoreHandler}
         >
           <h4>{course.Title}</h4>
           {isUserCourse ? <p>{progress}%</p> : null}
-          {/*<div dangerouslySetInnerHTML={{ __html: course.Description }}/>*/}
         </div>
       }
     </>

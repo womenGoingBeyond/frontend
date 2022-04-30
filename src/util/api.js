@@ -41,9 +41,10 @@ export default class Api {
 
   /**
    * @param {string} endpoint
+   * @param {object} body
    * @return {Promise<*|{msg: string}>}
    */
-  static async put(endpoint) {
+  static async put(endpoint, body = {}) {
     if (!endpoint || typeof endpoint !== 'string') return
 
     /* check if token is present in sessionStorage else return an empty object*/
@@ -62,7 +63,8 @@ export default class Api {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedToken}`
-        })
+        }),
+        body: JSON.stringify(body)
       })
       data = await response.json()
     } catch (e) {

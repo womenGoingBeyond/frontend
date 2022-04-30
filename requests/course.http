@@ -99,3 +99,19 @@ GET http://{{domain}}/api/user-course-progresses/{{course_id}}
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course progress of an user
+GET http://{{domain}}/api/user-lesson-states?api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=16&filters[$and][1][lesson][id][$eq]=1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get topic status of an user
+GET http://{{domain}}/api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=16&filters[$and][1][topic][id][$eq]=1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}

@@ -88,7 +88,6 @@ export default function Login() {
           Don't have an account?
           <Link to={'/register'} className={styles.registerLink}>register</Link>
         </p>
-        {/* TODO: use Stack for form elements */}
         <div className={styles.form}>
           <TextField
             fullWidth
