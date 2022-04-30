@@ -1,19 +1,21 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import './styles/index.css'
 import Router from './router'
-import reportWebVitals from './reportWebVitals'
-import { HashRouter } from 'react-router-dom'
+import { createRoot } from 'react-dom/client'
+import * as serviceWorker from './serviceWorkerRegistration'
+import { BrowserRouter } from 'react-router-dom'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <HashRouter>
-      <Router/>
-    </HashRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+const container = document.getElementById('root')
+const root = createRoot(container) // createRoot(container!) if you use TypeScript
+
+root.render(
+  <BrowserRouter>
+    <Router/>
+  </BrowserRouter>
 )
 
 if (process.env.NODE_ENV === 'development') {
   // reportWebVitals(console.log)
 }
+
+serviceWorker.register()

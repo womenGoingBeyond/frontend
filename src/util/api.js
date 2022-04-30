@@ -3,24 +3,22 @@ export default class Api {
     ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
 
   /**
-   *
    * @param endpoint {string}
-   * @param param {string}
    * @return {Promise<object>}
    */
-  static async get(endpoint, param = '') {
+  static async get(endpoint) {
     if (!endpoint || typeof endpoint !== 'string') return
 
-    let response, data
-    const storedToken = window.sessionStorage.getItem('wgb-jwt')
-
     /* check if token is present in sessionStorage else return an empty object*/
+    const storedToken = window.sessionStorage.getItem('wgb-jwt')
     if (storedToken === null) {
-      return {msg: 'no jwt'}
+      return { msg: 'no jwt' }
     }
 
+    let data
+
     try {
-      response = await fetch(`${this.baseURL}/${endpoint}/${param}`, {
+      const response = await fetch(`${this.baseURL}/${endpoint}`, {
         method: 'GET',
         mode: 'cors',
         headers: new Headers({
@@ -37,7 +35,42 @@ export default class Api {
     return data
   }
 
-  static async set() {
+  static async post() {
     console.log('set')
+  }
+
+  /**
+   * @param {string} endpoint
+   * @param {object} body
+   * @return {Promise<*|{msg: string}>}
+   */
+  static async put(endpoint, body = {}) {
+    if (!endpoint || typeof endpoint !== 'string') return
+
+    /* check if token is present in sessionStorage else return an empty object*/
+    const storedToken = window.sessionStorage.getItem('wgb-jwt')
+    if (storedToken === null) {
+      return { msg: 'no jwt' }
+    }
+
+    let data
+
+    try {
+      let response = await fetch(`${this.baseURL}/${endpoint}`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${storedToken}`
+        }),
+        body: JSON.stringify(body)
+      })
+      data = await response.json()
+    } catch (e) {
+      console.error(e)
+    }
+
+    return data
   }
 }

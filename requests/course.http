@@ -13,6 +13,22 @@ Authorization: Bearer {{jwt}}
 
 ###
 
+# @name get all courses with all relations
+GET http://{{domain}}/api/courses?populate=*
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get the category of all courses and sort by their id
+GET http://{{domain}}/api/courses?populate[0]=category&sort[0]=id
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
 # @name sort courses on id parameter
 GET http://{{domain}}/api/courses?sort[0]=id
 Accept: application/json
@@ -22,7 +38,23 @@ Authorization: Bearer {{jwt}}
 ###
 
 # @name get course by id
-GET http://{{domain}}/api/courses/1
+GET http://{{domain}}/api/courses/{{course_id}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course by id and media link
+GET http://{{domain}}/api/courses/{{course_id}}?populate[Content][populate][Media][fields][0]=url
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course main media link
+GET http://{{domain}}/{{media_link}}
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
@@ -48,6 +80,38 @@ Authorization: Bearer {{jwt}}
 
 # @name get all courses of a user
 GET http://{{domain}}/api/courses/{{course_id}}?populate=[users]&filters[users][id][$eq]={{user_id}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name register a user for a course
+PUT http://{{domain}}/api/courses/{{course_id}}/register
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course progress of an user
+GET http://{{domain}}/api/user-course-progresses/{{course_id}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get course progress of an user
+GET http://{{domain}}/api/user-lesson-states?api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=16&filters[$and][1][lesson][id][$eq]=1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get topic status of an user
+GET http://{{domain}}/api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=16&filters[$and][1][topic][id][$eq]=1
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}

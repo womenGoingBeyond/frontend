@@ -3,9 +3,142 @@
   height: 100%;
   display: flex;
   margin: 2rem 0 0;
-  padding: 1rem;
+  padding: 3rem 1rem 1rem;
   border: 1px solid rgba(0, 0, 0, .5);
   border-radius: 5px;
-  background-color: rgba(0, 0, 0, .03);
+}
 
+.courseShort {
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.overview {
+  flex-flow: column nowrap;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.img {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.img > img {
+  width: 70vw;
+  height: 50vw;
+}
+
+.description {
+  width: 100%;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 1rem 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, .35)
+}
+
+.footer > * {
+  font-size: 24px;
+  color: #ce6328;
+}
+
+/* begin of styles for the course route */
+
+.lessonsContainer {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.lessonsHeader {
+  margin: 3rem 0 1.5rem;
+}
+
+.lessonsWrapper {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;;
+}
+
+.lesson {
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 1rem 2rem 1.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.lesson:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.lesson > img {
+  margin-right: 2rem;
+  border-radius: 50%;
+}
+
+.lesson:not(:last-of-type)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 80%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, .2);
+}
+
+.lessonsDone {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(0, 0, 0, .3);
+  margin-left: auto;
+}
+
+/* end of styles for the course route */
+
+.topicHeader {
+  /*padding: 1rem 0 0 1rem;*/
+}
+
+.topicContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  width: 90%;
+  min-height: 100vh;
+  height: auto;
+  margin-top: 2rem;
+}
+
+.topicContainer > * {
+  margin-bottom: 2rem;
+}
+
+.topicContainer > img {
+  width: 90vw;
+  height: 90vw;
+  align-self: center;
 }
