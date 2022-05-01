@@ -9,12 +9,10 @@ import Auth from '../util/auth'
 export default function Course() {
   const [course, setCourse] = useState(null)
   const [lessons, setLessons] = useState([])
-  const [lessonsImages, setLessonsImages] = useState([])
   const params = useParams()
   const navigate = useNavigate()
 
   const overviewURL = `api/courses/${params.courseId}?populate[Content][populate][Media][fields][0]=url&populate[lessons][fields][0]=id&populate[lessons][fields][1]=title`
-  const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
 
   useEffect(() => {
     fetchCourseInfo().catch(console.error)
@@ -31,31 +29,17 @@ export default function Course() {
       return [lessonResponse, progress]
     })
 
-    let lessonsArray = [], lessonImagesArray = []
+    let lessonsArray = []
     for (const entry of lessonEntries) {
       let e = await entry
       let lesson = e[0].data
       let progress = e[1].data
 
-      let img = {}
-      if (lesson.Content.length) {
-        for (const content of lesson.Content) {
-          if (content.__component.includes('media')) {
-            img.src = content.URL ? content.URL : `${cmsURL}${content.Media.url}`
-            img.alt = content.Caption ? content.Caption : lesson.Description
-          }
-        }
-        console.log(require('../img/logo.svg'))
-        if (!img.src) img.src = 'https://picsum.photos/200/300?grayscale'
-        if (!img.alt) img.alt = lesson.Description
-        lessonImagesArray.push(img)
-      }
-      lesson.done = progress[0].done
+      lesson.done = progress.length > 0 ? progress[0].done : false
       lessonsArray.push(lesson)
     }
 
     setLessons(lessonsArray)
-    setLessonsImages(lessonImagesArray)
     setCourse(course)
   }
 
@@ -77,7 +61,6 @@ export default function Course() {
             <h1>{course.Title}</h1>
             <div className={[styles.course, styles.overview].join(' ')}>
               <div className={styles.header}>
-                {/*<p>{progress}%</p>*/}
               </div>
               <div className={styles.img}>
                 <img
@@ -107,12 +90,6 @@ export default function Course() {
                     id={`lesson-${lesson.id}`}
                     onClick={() => lessonClickHandler(lesson.id)}
                   >
-                    <img
-                      src={lessonsImages[index].src}
-                      alt={lessonsImages[index].alt}
-                      width={'40px'}
-                      height={'40px'}
-                    />
                     <h3>{lesson.Title}</h3>
                     <div
                       className={styles.lessonsDone}

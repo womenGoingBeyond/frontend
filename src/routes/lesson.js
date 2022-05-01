@@ -8,13 +8,11 @@ import Auth from '../util/auth'
 
 export default function Lesson() {
   const [lesson, setLesson] = useState(null)
-  const [lessonImage, setLessonImage] = useState({})
   const [topics, setTopics] = useState([])
   let params = useParams()
   let navigate = useNavigate()
 
   const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
-  const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
 
   useEffect(() => {
     fetchLessonInfo().catch(console.error)
@@ -22,19 +20,7 @@ export default function Lesson() {
 
   const fetchLessonInfo = async () => {
     let response = await Api.get(overviewURL)
-    let topics = response.data.topics, topicsArray = []
-    let img = {}
-
-    if (response.data.Content.length) {
-      for (const content of response.data.Content) {
-        if (content.__component.includes('media')) {
-          img.src = content.URL ? content.URL : `${cmsURL}${content.Media.url}`
-          img.alt = content.Caption ? content.Caption : response.data.Description
-        }
-      }
-    }
-    if (!img.src) img.src = `https://picsum.photos/200/300?grayscale`
-    if (!img.alt) img.alt = response.data.Description
+    let topics = response.data.topics
 
     // fetch topic status
     let topicStatusEntries = topics.map(async topic => {
@@ -48,7 +34,6 @@ export default function Lesson() {
     }
 
     setLesson(response.data)
-    setLessonImage(img)
     setTopics(topics)
   }
 
@@ -65,13 +50,6 @@ export default function Lesson() {
             <h1>{lesson.Title}</h1>
             <div className={[styles.course, styles.overview].join(' ')}>
               <div className={styles.header}>
-                {/*<p>{progress}%</p>*/}
-              </div>
-              <div className={styles.img}>
-                <img
-                  src={lessonImage.src}
-                  alt={lessonImage.alt}
-                />
               </div>
               <div className={styles.description}>
                 <p>{lesson.Description.length ? lesson.Description : ''}</p>
@@ -105,6 +83,5 @@ export default function Lesson() {
         }
       </main>
     </>
-
   )
 }
