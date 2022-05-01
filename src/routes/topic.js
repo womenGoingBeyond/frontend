@@ -65,6 +65,11 @@ export default function Topic() {
       generate: function (data) {
         return `<img src=${data.src} alt=${data.alt}>`
       }
+    },
+    video: {
+      generate: function (data) {
+        return `<video src=${data.src} width="320" height="240" controls></video>`
+      }
     }
   }
 
