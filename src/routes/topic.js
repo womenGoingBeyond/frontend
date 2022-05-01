@@ -10,7 +10,6 @@ export default function Topic() {
   const [topic, setTopic] = useState(null)
   const [htmlElements, setHtmlElements] = useState('')
   const [isTopicCompleted, setIsTopicCompleted] = useState(false)
-  const [progressId, setProgressId] = useState(NaN)
   let params = useParams()
 
   const infoURL = `api/topics/${params.topicId}?populate[Content][populate][Media][fields][0]=url`
@@ -25,8 +24,7 @@ export default function Topic() {
       .then(async topic => {
         let progress = await Api.get(`api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][topic][id][$eq]=${topic.id}`)
 
-        setProgressId(progress.data[0].id)
-        setIsTopicCompleted(progress.data[0].done)
+        setIsTopicCompleted(progress.data.length > 0 ? progress.data[0].done : false)
         setTopic(topic)
         setHtmlElements(generateHTMLFromContent(topic.Content).join(''))
       })
@@ -93,10 +91,6 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    let updatedProgress = await Api.put(`api/user-topic-states/${progressId}`, {
-      data: { 'done': true }
-    })
-    console.log('d', updatedProgress)
     setIsTopicCompleted(true)
   }
 
