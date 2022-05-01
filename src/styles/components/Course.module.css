@@ -125,7 +125,7 @@
 .topicContainer {
   display: flex;
   flex-flow: column nowrap;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: flex-start;
   width: 90%;
   min-height: 100vh;

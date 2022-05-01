@@ -30,7 +30,7 @@ export default function Lesson() {
 
     for (let i = 0; i < topics.length; i++) {
       let progress = await topicStatusEntries[i]
-      topics[i].done = progress.data[0].done
+      topics[i].done = progress.data.length > 0 ? progress.data[0].done : false
     }
 
     setLesson(response.data)

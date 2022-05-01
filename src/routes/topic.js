@@ -15,7 +15,9 @@ export default function Topic() {
 
   const infoURL = `api/topics/${params.topicId}?populate[Content][populate][Media][fields][0]=url`
   const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
-  const mediaTypes = new Map([['jpg', 'img'], ['jpeg', 'img'], ['png', 'img'], ['gif', 'img'], ['webp', 'img'], ['mp4', 'video'], ['mp3', 'audio']])
+  const mediaTypes = new Map([
+    ['jpg', 'img'], ['jpeg', 'img'], ['png', 'img'], ['gif', 'img'], ['webp', 'img'], ['mp4', 'video'], [''], ['mp3', 'audio']
+  ])
 
 
   useEffect(() => {
