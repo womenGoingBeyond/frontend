@@ -1,17 +1,22 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import styles from '../styles/components/Course.module.css'
 import Header from '../components/Header'
 import { Button } from '@mui/material'
 import Auth from '../util/auth'
+import Skeleton from '@mui/material/Skeleton'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
   const [htmlElements, setHtmlElements] = useState('')
+  const [progressId, setProgressId] = useState(NaN)
   const [isTopicCompleted, setIsTopicCompleted] = useState(false)
-  let params = useParams()
 
+  let params = useParams()
+  let navigate = useNavigate()
+
+  const skeletonAmount = [...Array(2).keys()]
   const infoURL = `api/topics/${params.topicId}?populate[Content][populate][Media][fields][0]=url`
   const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
   const mediaTypes = new Map([
@@ -23,6 +28,7 @@ export default function Topic() {
       .then(async topic => {
         let progress = await Api.get(`api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][topic][id][$eq]=${topic.id}`)
 
+        setProgressId(progress.data[0].id)
         setIsTopicCompleted(progress.data.length > 0 ? progress.data[0].done : false)
         setTopic(topic)
         setHtmlElements(generateHTMLFromContent(topic.Content).join(''))
@@ -95,7 +101,10 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    setIsTopicCompleted(true)
+    await Api.put(`api/user-topic-states/${progressId}`, {
+      data: { 'done': true }
+    })
+    navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
   }
 
   return (
@@ -104,19 +113,29 @@ export default function Topic() {
       <main>
         {topic !== null ? <h1 className={styles.topicHeader}>{topic.Title}</h1> : null}
         {htmlElements.length > 0 ?
-          <div
-            className={styles.topicContainer}
-            dangerouslySetInnerHTML={{ __html: htmlElements }}
-          />
-          : null
+          <>
+            <div
+              className={styles.topicContainer}
+              dangerouslySetInnerHTML={{ __html: htmlElements }}
+            />
+            <Button
+              variant="contained"
+              children={isTopicCompleted ? 'Done' : 'Complete'}
+              sx={{ marginTop: '2rem' }}
+              disabled={isTopicCompleted}
+              onClick={markTopicAsDone}
+            />
+          </>
+          :
+          <>
+            {skeletonAmount.map((num, index) =>
+              <Skeleton
+                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
+                variant="rectangular"
+              />
+            )}
+          </>
         }
-        <Button
-          variant="contained"
-          children={isTopicCompleted ? 'Done' : 'Complete'}
-          sx={{ marginTop: '4rem' }}
-          disabled={isTopicCompleted}
-          onClick={markTopicAsDone}
-        />
       </main>
     </>
   )

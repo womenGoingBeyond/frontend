@@ -128,7 +128,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   width: 90%;
-  min-height: 100vh;
+  /*min-height: 100vh;*/
   height: auto;
   margin-top: 2rem;
 }

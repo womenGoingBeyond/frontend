@@ -12,6 +12,7 @@ export default function Lesson() {
   let params = useParams()
   let navigate = useNavigate()
 
+  const skeletonAmount = [...Array(2).keys()]
   const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
 
   useEffect(() => {
@@ -76,10 +77,14 @@ export default function Lesson() {
             </div>
           </>
           :
-          <Skeleton
-            sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
-            variant="rectangular"
-          />
+          <>
+            {skeletonAmount.map((num, index) =>
+              <Skeleton
+                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
+                variant="rectangular"
+              />
+            )}
+          </>
         }
       </main>
     </>
