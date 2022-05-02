@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import Api from '../util/api'
-import Skeleton from '@mui/material/Skeleton'
 import Course from '../components/Course'
 import styles from '../styles/routes/courses.module.css'
 import Auth from '../util/auth'
 import Header from '../components/Header'
+import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Courses() {
   const [courses, setCourses] = useState([])
@@ -55,20 +55,8 @@ export default function Courses() {
                 cacheName={`${userCoursesAPIEndpoint}`}
               />
             )
-            : <>
-              <Skeleton
-                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
-                variant="rectangular"
-              />
-              <Skeleton
-                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px' }}
-                variant="rectangular"
-              />
-              <Skeleton
-                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px' }}
-                variant="rectangular"
-              />
-            </>
+            :
+            <CustomSkeleton amount={3}/>
           }
         </section>
       </main>

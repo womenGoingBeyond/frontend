@@ -5,7 +5,7 @@ import styles from '../styles/components/Course.module.css'
 import Header from '../components/Header'
 import { Button } from '@mui/material'
 import Auth from '../util/auth'
-import Skeleton from '@mui/material/Skeleton'
+import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
@@ -16,7 +16,6 @@ export default function Topic() {
   let params = useParams()
   let navigate = useNavigate()
 
-  const skeletonAmount = [...Array(2).keys()]
   const infoURL = `api/topics/${params.topicId}?populate[Content][populate][Media][fields][0]=url`
   const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
   const mediaTypes = new Map([
@@ -127,14 +126,7 @@ export default function Topic() {
             />
           </>
           :
-          <>
-            {skeletonAmount.map((num, index) =>
-              <Skeleton
-                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
-                variant="rectangular"
-              />
-            )}
-          </>
+          <CustomSkeleton amount={2}/>
         }
       </main>
     </>

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import Header from '../components/Header'
 import styles from '../styles/components/Course.module.css'
-import Skeleton from '@mui/material/Skeleton'
 import Auth from '../util/auth'
+import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Lesson() {
   const [lesson, setLesson] = useState(null)
@@ -12,7 +12,6 @@ export default function Lesson() {
   let params = useParams()
   let navigate = useNavigate()
 
-  const skeletonAmount = [...Array(2).keys()]
   const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
 
   useEffect(() => {
@@ -77,14 +76,7 @@ export default function Lesson() {
             </div>
           </>
           :
-          <>
-            {skeletonAmount.map((num, index) =>
-              <Skeleton
-                sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
-                variant="rectangular"
-              />
-            )}
-          </>
+          <CustomSkeleton amount={2}/>
         }
       </main>
     </>
