@@ -9,10 +9,11 @@ import CustomSkeleton from '../components/CustomSkeleton'
 export default function Lesson() {
   const [lesson, setLesson] = useState(null)
   const [topics, setTopics] = useState([])
+  const [quizzes, setQuizzes] = useState([])
   let params = useParams()
   let navigate = useNavigate()
 
-  const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
+  const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title&populate[quizzes][fields][0]=id&populate[quizzes][fields][0]=Title`
 
   useEffect(() => {
     fetchLessonInfo().catch(console.error)
@@ -21,6 +22,7 @@ export default function Lesson() {
   const fetchLessonInfo = async () => {
     let response = await Api.get(overviewURL)
     let topics = response.data.topics
+    let quizzes = response.data.quizzes
 
     // fetch topic status
     let topicStatusEntries = topics.map(async topic => {
@@ -35,10 +37,14 @@ export default function Lesson() {
 
     setLesson(response.data)
     setTopics(topics)
+    setQuizzes(quizzes)
   }
 
   const topicClickHandler = (topicId) => {
     navigate(`/courses/${params.courseId}/lessons/${params.lessonId}/topics/${topicId}`)
+  }
+  const quizClickHandler = (quizId) => {
+    navigate(`/courses/${params.courseId}/lessons/${params.lessonId}/quizzes/${quizId}`)
   }
 
   return (
@@ -73,6 +79,23 @@ export default function Lesson() {
                   </div>
                 ) : null}
               </div>
+              {quizzes.length > 0 ?
+                <>
+                  <h2 className={styles.lessonsHeader}>Quizzes</h2>
+                  <div className={styles.lessonsWrapper}>
+                    {quizzes.map((quiz, index) =>
+                      <div
+                        key={quiz.Title + index}
+                        className={styles.lesson}
+                        id={`quiz-${quiz.id}`}
+                        onClick={() => quizClickHandler(quiz.id)}
+                      >
+                        <h3>{quiz.Title}</h3>
+                      </div>
+                    )}
+                  </div>
+                </>
+                : null}
             </div>
           </>
           :

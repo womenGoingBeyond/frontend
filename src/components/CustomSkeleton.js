@@ -8,6 +8,7 @@ export default function CustomSkeleton({ amount = 1 }) {
     <>
       {skeletonAmount.map((num, index) =>
         <Skeleton
+          key={num + index + (new Date().toISOString())}
           sx={{ bgcolor: 'grey.300', width: '90%', height: '150px', mb: '1rem' }}
           variant="rectangular"
         />

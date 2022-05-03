@@ -4,6 +4,7 @@ import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import { CacheableResponsePlugin } from 'workbox-cacheable-response'
+import { RangeRequestsPlugin } from 'workbox-range-requests'
 import PouchDB from 'pouchdb'
 
 const db = new PouchDB('courses')
@@ -96,7 +97,8 @@ async function handleRequest({ event }) {
       plugins: [
         new CacheableResponsePlugin({
           statuses: [0, 200]
-        })
+        }),
+        new RangeRequestsPlugin()
       ]
     })
     return cacheFirstStrategy.handle({ event, request: event.request })
