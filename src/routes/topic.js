@@ -70,12 +70,12 @@ export default function Topic() {
     },
     audio: {
       generate: function (data) {
-        return `<audio src=${data.src} controls></audio>`
+        return `<audio src=${data.src} controls crossorigin="anonymous"></audio>`
       }
     },
     video: {
       generate: function (data) {
-        return `<video src=${data.src} width="320" height="240" controls></video>`
+        return `<video src=${data.src} width="320" height="240" controls crossorigin="anonymous"></video>`
       }
     }
   }

@@ -115,3 +115,19 @@ GET http://{{domain}}/api/user-topic-states?filters[$and][0][users_permissions_u
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
+
+###
+
+# @name get topic status of an user
+GET http://{{domain}}/api/lessons/2?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title&populate[quizzes][fields][0]=id&populate[quizzes][fields][0]=Title
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+###
+
+# @name get topic status of an user
+GET http://{{domain}}/api/quizzes/4?populate=*
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
