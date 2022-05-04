@@ -10,7 +10,7 @@ export default function Quiz() {
   const [quiz, setQuiz] = useState(null)
   let params = useParams()
 
-  let infoURL = `api/quizzes/${params.quizId}?populate=*`
+  let infoURL = `api/quizzes/${params.quizId}?populate=%2A`
   useEffect(() => {
     fetchQuizInfo()
       .then(data => {
