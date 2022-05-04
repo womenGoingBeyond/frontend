@@ -99,7 +99,10 @@ async function handleRequest({ event }) {
           statuses: [0, 200]
         }),
         new RangeRequestsPlugin()
-      ]
+      ],
+      matchOptions: {
+        ignoreVary: true
+      }
     })
     return cacheFirstStrategy.handle({ event, request: event.request })
   }
@@ -126,6 +129,10 @@ function sendMessage(msg) {
 }
 
 
+/**
+ *
+ * @param {MessageEvent} event
+ */
 function downloadCourse(event) {
   const courseId = event.data.id
   let init = {
@@ -141,6 +148,14 @@ function downloadCourse(event) {
   fetch(`${event.data.baseURL}/api/courses/${courseId}/meta`, init)
     .then(response => response.json())
     .then(data => {
+      // filter video and audio requests and cache them separately
+      let audioAndVideoRequests = data.data.requests.filter(req => req.endsWith('mp4') || req.endsWith('mp3'))
+      if (audioAndVideoRequests.length > 0) downloadVideoAndAudio(audioAndVideoRequests, event.data.baseURL, courseId, init)
+      // remove video and audio requests from original ones
+      if (audioAndVideoRequests.length > 0) {
+        data.data.requests = data.data.requests.filter(req => !audioAndVideoRequests.includes(req))
+      }
+
       Promise.allSettled(data.data.requests.map(req => {
         if (req.startsWith('/')) req = event.data.baseURL + req
         return fetch(req, init)
@@ -184,6 +199,38 @@ function downloadCourse(event) {
 }
 
 
+/**
+ *
+ * @param {Array<string>} requests
+ * @param {string} baseURL
+ * @param {number} courseId
+ * @param {Object} init
+ */
+async function downloadVideoAndAudio(requests, baseURL, courseId, init) {
+  requests = requests.map(req => {
+    if (req.startsWith('/')) req = baseURL + req
+    return req
+  })
+
+  let cache = await caches.open(`dl-course-${courseId}`)
+  let cachePromises = [], promise
+
+  for (let req of requests) {
+    promise = cache.add(req)
+    cachePromises.push(promise)
+  }
+
+  Promise.allSettled(cachePromises)
+    .then(values => {
+      console.log('values', values)
+    })
+    .catch(console.error)
+}
+
+/**
+ *
+ * @param {MessageEvent} event
+ */
 function deleteCourse(event) {
   const courseId = event.data.id
 
