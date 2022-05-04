@@ -22,16 +22,10 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
       .catch(console.error)
 
     // listen to messages
-    navigator.serviceWorker.onmessage = (event) => {
-      if (event.data && event.data.type === 'DOWNLOAD_COMPLETED') {
-        console.log('done')
-        updateDownloadState(true)
-      }
+    navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessages)
 
-      if (event.data && event.data.type === 'DOWNLOAD_DELETED') {
-        updateDownloadState(false)
-      }
-    }
+    // clean up
+    return () => navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessages)
   }, [])
 
   useEffect(() => {
@@ -40,6 +34,21 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
         .catch(console.error)
     }
   }, [isUserCourse])
+
+  /**
+   * @param {MessageEvent} event
+   */
+  const handleServiceWorkerMessages = (event) => {
+    if (event.data && event.data.type === 'DOWNLOAD_COMPLETED') {
+      console.log('done')
+      updateDownloadState(true)
+    }
+
+    if (event.data && event.data.type === 'DOWNLOAD_DELETED') {
+      console.log('cache deleted')
+      updateDownloadState(false)
+    }
+  }
 
   const updateDownloadState = (state) => setIsCourseDownloaded(state)
 
@@ -70,13 +79,11 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     event.stopPropagation()
     event.preventDefault()
     fallbackFetch()
-    setIsCourseDownloaded(true)
   }
 
   const removeDownloadedCourse = (event) => {
     event.stopPropagation()
     event.preventDefault()
-    console.log('delete')
     navigator.serviceWorker.controller.postMessage({
       type: 'DELETE_COURSE',
       id: course.id,

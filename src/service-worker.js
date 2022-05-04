@@ -243,22 +243,19 @@ async function downloadVideoAndAudio(requests, baseURL, courseId, init) {
 function deleteCourse(event) {
   const courseId = event.data.id
 
-  db.allDocs({ include_docs: true })
-    .then(results => {
-      Promise.allSettled(results.rows.map(row => {
-        if (row.doc.cacheName === `course-${courseId}`) {
-          return db.remove(row.doc._id, row.doc._rev)
-        }
-      }))
-        .catch(console.error)
-    })
-    .catch(console.error)
   caches.delete(`dl-course-${courseId}`)
     .then(cacheDeleted => {
       if (cacheDeleted) {
-        db.get(`course-${courseId}`).then(doc => {
-          db.remove(doc)
-        }).catch(console.error)
+        db.get(`course-${courseId}`)
+          .then(doc => {
+            return db.remove(doc)
+          })
+          .then(data => {
+            if (data.ok) {
+              sendMessage('DOWNLOAD_DELETED')
+            }
+          })
+          .catch(console.error)
       }
     })
     .catch(console.error)
