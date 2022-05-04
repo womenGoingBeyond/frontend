@@ -150,7 +150,6 @@ function downloadCourse(event) {
     .then(data => {
       // filter video and audio requests and cache them separately
       let audioAndVideoRequests = data.data.requests.filter(req => req.endsWith('mp4') || req.endsWith('mp3'))
-      if (audioAndVideoRequests.length > 0) downloadVideoAndAudio(audioAndVideoRequests, event.data.baseURL, courseId, init)
       // remove video and audio requests from original ones
       if (audioAndVideoRequests.length > 0) {
         data.data.requests = data.data.requests.filter(req => !audioAndVideoRequests.includes(req))
@@ -190,7 +189,21 @@ function downloadCourse(event) {
             db.put({
               _id: `course-${courseId}`,
               requests: [...requests]
-            }).catch(console.error)
+            })
+              .then(async (doc) => {
+                // Check for audio and video requests. If any cache them and update the refs in indexeddb.
+                if (audioAndVideoRequests.length > 0) {
+                  try {
+                    await downloadVideoAndAudio(audioAndVideoRequests, event.data.baseURL, courseId, init)
+                    let courseDoc = await db.get(doc.id)
+                    courseDoc.requests = [...courseDoc.requests, ...audioAndVideoRequests]
+                    await db.put(courseDoc)
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }
+              })
+              .catch(console.error)
           }
         )
         .catch(console.error)
@@ -220,11 +233,7 @@ async function downloadVideoAndAudio(requests, baseURL, courseId, init) {
     cachePromises.push(promise)
   }
 
-  Promise.allSettled(cachePromises)
-    .then(values => {
-      console.log('values', values)
-    })
-    .catch(console.error)
+  return Promise.allSettled(cachePromises)
 }
 
 /**
