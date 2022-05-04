@@ -193,6 +193,7 @@ function downloadCourse(event) {
               .then(async (doc) => {
                 // Check for audio and video requests. If any cache them and update the refs in indexeddb.
                 if (audioAndVideoRequests.length > 0) {
+                  audioAndVideoRequests = audioAndVideoRequests.map(req => event.data.baseURL + req)
                   try {
                     await downloadVideoAndAudio(audioAndVideoRequests, event.data.baseURL, courseId, init)
                     let courseDoc = await db.get(doc.id)
