@@ -1,52 +1,25 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import Header from '../components/Header'
 import CustomSkeleton from '../components/CustomSkeleton'
 import styles from '../styles/components/Course.module.css'
-import { Button } from '@mui/material'
 
 export default function Quiz() {
   const [quiz, setQuiz] = useState(null)
-  let params = useParams()
+  let params = useParams(), navigate = useNavigate()
+  let questionsOverviewURL = `api/quizzes/${params.quizId}/questions`
 
-  let infoURL = `api/quizzes/${params.quizId}?populate=%2A`
   useEffect(() => {
-    fetchQuizInfo()
-      .then(data => {
-        console.log('data:', data)
-        setQuiz(data)
+    Api.get(questionsOverviewURL)
+      .then(quiz => {
+        setQuiz(quiz.data)
       })
       .catch(console.error)
   }, [])
 
-  const fetchQuizInfo = async () => {
-    let response = await Api.get(infoURL)
-    return response.data
-  }
-
-  /**
-   * @param {MouseEvent} event
-   */
-  const onlyOne = (event) => {
-    // It can be used for another types for answering like multiple. The current state is only single answer.
-    let checkboxes = document.getElementsByName('check')
-    checkboxes.forEach((item) => {
-      if (item !== event.target) item.checked = false
-    })
-  }
-
-  const sendRequest = () => {
-    let answers = document.querySelectorAll(`.${styles.quizAnswer}`),
-      states = [], input
-
-    for (let answer of answers) {
-      input = answer.querySelector('input')
-      states.push({ id: +(answer.id.split('-')[1]), state: input.checked })
-    }
-
-
-    console.log(states)
+  const navigateToQuestion = (questionId) => {
+    navigate(`/courses/${params.courseId}/lessons/${params.lessonId}/quizzes/${params.quizId}/questions/${questionId}`)
   }
 
   return (
@@ -55,34 +28,28 @@ export default function Quiz() {
       <main>
         {quiz ?
           <>
-            <h1>{quiz.Title}</h1>
+            <h1>{quiz.title}</h1>
             <div className={styles.quizContainer}>
-              <p className={styles.quizQuestion}>{quiz.question}</p>
-              <div className={styles.quizAnswers}>
-                {quiz.answers.map((answer, index) =>
+              {quiz.questions.length > 0 ? quiz.questions.map((question, index) =>
                   <div
-                    key={answer + index}
-                    className={styles.quizAnswer}
-                    id={`answer-${answer.id}`}
+                    key={question.id + index}
+                    className={styles.lesson}
+                    id={`topic-${question.id}`}
+                    onClick={() => navigateToQuestion(question.id)}
                   >
-                    <label htmlFor={`answer-${index}`}>{answer.Content}</label>
-                    <input type="checkbox" id={`answer-${index}`} name="check" onClick={onlyOne}/>
+                    <h3>Question {index + 1}</h3>
+                    <div
+                      className={styles.lessonsDone}
+                      style={{ backgroundColor: `${question.state ? 'rgba(0,255,0,.7)' : 'none'}` }}
+                    />
                   </div>
-                )}
-              </div>
+                )
+                : null}
             </div>
-            <Button
-              variant="contained"
-              children={'submit'}
-              type={'submit'}
-              sx={{ marginTop: '2rem' }}
-              onClick={sendRequest}
-            />
           </>
           :
           <CustomSkeleton/>
         }
-
       </main>
     </>
   )

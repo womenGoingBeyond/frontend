@@ -4,13 +4,11 @@ import Api from '../util/api'
 import styles from '../styles/components/Course.module.css'
 import Header from '../components/Header'
 import { Button } from '@mui/material'
-import Auth from '../util/auth'
 import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
   const [htmlElements, setHtmlElements] = useState('')
-  const [progressId, setProgressId] = useState(NaN)
   const [isTopicCompleted, setIsTopicCompleted] = useState(false)
 
   let params = useParams()
@@ -25,10 +23,9 @@ export default function Topic() {
   useEffect(() => {
     fetchTopicInfo()
       .then(async topic => {
-        let progress = await Api.get(`api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][topic][id][$eq]=${topic.id}`)
+        let progress = await Api.get(`api/topics/${params.topicId}/status `)
 
-        setProgressId(progress.data[0].id)
-        setIsTopicCompleted(progress.data.length > 0 ? progress.data[0].done : false)
+        setIsTopicCompleted(progress.data ? progress.data.done : false)
         setTopic(topic)
         setHtmlElements(generateHTMLFromContent(topic.Content).join(''))
       })
@@ -100,7 +97,7 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    await Api.put(`api/user-topic-states/${progressId}`, {
+    await Api.post(`api/topics/${params.topicId}/complete`, {
       data: { 'done': true }
     })
     navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
