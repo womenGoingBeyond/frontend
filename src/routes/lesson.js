@@ -43,14 +43,16 @@ export default function Lesson() {
       }
     }
 
-    let quizProgresses = await Promise.allSettled(responses[1].value.data.map(quiz => {
-      return Api.get(`api/quizzes/${quiz.id}/progress`)
-    }))
-    for (let quizProgress of quizProgresses) {
-      if (quizProgress.status === 'fulfilled') {
-        for (let quiz of responses[1].value.data) {
-          if (quiz.id === quizProgress.value[0].quiz.id) {
-            quiz.progress = quizProgress.value[0].progress
+    if (responses[1].value.data.length > 0) {
+      let quizProgresses = await Promise.allSettled(responses[1].value.data.map(quiz => {
+        return Api.get(`api/quizzes/${quiz.id}/progress`)
+      }))
+      for (let quizProgress of quizProgresses) {
+        if (quizProgress.status === 'fulfilled') {
+          for (let quiz of responses[1].value.data) {
+            if (quiz.id === quizProgress.value[0].quiz.id) {
+              quiz.progress = quizProgress.value[0].progress
+            }
           }
         }
       }
