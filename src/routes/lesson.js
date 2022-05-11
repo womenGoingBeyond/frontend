@@ -115,7 +115,7 @@ export default function Lesson() {
                         onClick={() => quizClickHandler(quiz.id)}
                       >
                         <h3>{quiz.title}</h3>
-                        <p>{+(quiz.progress) * 100}%</p>
+                        <p>{(+(quiz.progress) * 100) || 0}%</p>
                       </div>
                     )}
                   </div>
