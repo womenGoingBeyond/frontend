@@ -8,6 +8,7 @@ import AuthMiddleware from './components/AuthMiddleware'
 import Lesson from './routes/lesson'
 import Topic from './routes/topic'
 import Quiz from './routes/quiz'
+import Question from './routes/question'
 
 export default function router() {
   return (
@@ -20,6 +21,9 @@ export default function router() {
       <Route path={'courses/:courseId/lessons/:lessonId'} element={<AuthMiddleware><Lesson/></AuthMiddleware>}/>
       <Route path={'courses/:courseId/lessons/:lessonId/topics/:topicId'} element={<AuthMiddleware><Topic/></AuthMiddleware>}/>
       <Route path={'courses/:courseId/lessons/:lessonId/quizzes/:quizId'} element={<AuthMiddleware><Quiz/></AuthMiddleware>}/>
+      <Route path={'courses/:courseId/lessons/:lessonId/quizzes/:quizId/questions/:questionId'}
+             element={<AuthMiddleware><Question/></AuthMiddleware>}
+      />
       <Route
         path="*"
         element={
@@ -36,4 +40,5 @@ export default function router() {
 //    courses/:courseId/ (list course with courseId and all his lessons)
 //        lessons/:lessonIs (list lesson with the lessonId and all his topics and quizzes)
 //            topics/:topicsId  (display topic with the topicId)
-//            quizzes/:quizId   (display quiz with the quizId)
+//            quizzes/:quizId/questions/questionId   (display quiz with the quizId)
+//                questions/questionId  (display question with questionId)

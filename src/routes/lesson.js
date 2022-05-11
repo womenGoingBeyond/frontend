@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import Header from '../components/Header'
 import styles from '../styles/components/Course.module.css'
-import Auth from '../util/auth'
 import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Lesson() {
@@ -13,31 +12,53 @@ export default function Lesson() {
   let params = useParams()
   let navigate = useNavigate()
 
-  const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title&populate[quizzes][fields][0]=id&populate[quizzes][fields][0]=Title`
+  const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
+  const quizzesRequestURL = `api/lessons/${params.lessonId}/quizzes`
 
   useEffect(() => {
     fetchLessonInfo().catch(console.error)
   }, [])
 
   const fetchLessonInfo = async () => {
-    let response = await Api.get(overviewURL)
-    let topics = response.data.topics
-    let quizzes = response.data.quizzes
+    let overviewPromise = Api.get(overviewURL)
+    let quizzesPromise = Api.get(quizzesRequestURL)
+    let responses = await Promise.allSettled([overviewPromise, quizzesPromise])
 
-    // fetch topic status
-    let topicStatusEntries = topics.map(async topic => {
-      let endpoint = `api/user-topic-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][topic][id][$eq]=${topic.id}`
-      return await Api.get(endpoint)
-    })
-
-    for (let i = 0; i < topics.length; i++) {
-      let progress = await topicStatusEntries[i]
-      topics[i].done = progress.data.length > 0 ? progress.data[0].done : false
+    let promisesStatusIsFulfilled = responses.filter(r => r.status === 'fulfilled')
+    if (promisesStatusIsFulfilled.length === 0) {
+      return
     }
 
-    setLesson(response.data)
+    let topics = responses[0].value.data.topics
+
+    // fetch and set topic status
+    let topicStatusEntries = await Promise.allSettled(topics.map(async topic => Api.get(`api/topics/${topic.id}/status`)))
+    for (let entry of topicStatusEntries) {
+      if (entry.status === 'fulfilled') {
+        for (let topic of topics) {
+          if (Object.keys(entry.value).length !== 0 && entry.value.data.topic.id === topic.id) {
+            topic.done = entry.value.data.done
+          }
+        }
+      }
+    }
+
+    let quizProgresses = await Promise.allSettled(responses[1].value.data.map(quiz => {
+      return Api.get(`api/quizzes/${quiz.id}/progress`)
+    }))
+    for (let quizProgress of quizProgresses) {
+      if (quizProgress.status === 'fulfilled') {
+        for (let quiz of responses[1].value.data) {
+          if (quiz.id === quizProgress.value[0].quiz.id) {
+            quiz.progress = quizProgress.value[0].progress
+          }
+        }
+      }
+    }
+
+    setLesson(responses[0].value.data)
     setTopics(topics)
-    setQuizzes(quizzes)
+    setQuizzes(responses[1].value.data)
   }
 
   const topicClickHandler = (topicId) => {
@@ -85,12 +106,14 @@ export default function Lesson() {
                   <div className={styles.lessonsWrapper}>
                     {quizzes.map((quiz, index) =>
                       <div
-                        key={quiz.Title + index}
+                        key={quiz.title + index}
                         className={styles.lesson}
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
                         id={`quiz-${quiz.id}`}
                         onClick={() => quizClickHandler(quiz.id)}
                       >
-                        <h3>{quiz.Title}</h3>
+                        <h3>{quiz.title}</h3>
+                        <p>{+(quiz.progress) * 100}%</p>
                       </div>
                     )}
                   </div>
