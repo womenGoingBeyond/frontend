@@ -48,7 +48,7 @@ export default function Lesson() {
         return Api.get(`api/quizzes/${quiz.id}/progress`)
       }))
       for (let quizProgress of quizProgresses) {
-        if (quizProgress.status === 'fulfilled') {
+        if (quizProgress.status === 'fulfilled' && quizProgress.value.length > 0) {
           for (let quiz of responses[1].value.data) {
             if (quiz.id === quizProgress.value[0].quiz.id) {
               quiz.progress = quizProgress.value[0].progress
