@@ -6,7 +6,6 @@ import Api from '../util/api'
 import DownloadIcon from '@mui/icons-material/Download'
 import DownloadDoneIcon from '@mui/icons-material/DownloadDone'
 import DeleteIcon from '@mui/icons-material/Delete'
-import Auth from '../util/auth'
 
 export default function Course({ course, keyValue, userCourse, cacheName }) {
   const [progress, setProgress] = useState(0)
@@ -53,8 +52,8 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
   const updateDownloadState = (state) => setIsCourseDownloaded(state)
 
   const fetchCourseProgress = () => {
-    return Api.get(`api/user-course-progresses?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][course][id][$eq]=${course.id}`)
-      .then(response => setProgress(response.data[0].progress * 100))
+    return Api.get(`api/user-course-progresses/${course.id}`)
+      .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
       .catch(console.error)
   }
 
