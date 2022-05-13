@@ -2,9 +2,10 @@
 import { clientsClaim, } from 'workbox-core'
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
+import { CacheFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies'
 import { CacheableResponsePlugin } from 'workbox-cacheable-response'
 import { RangeRequestsPlugin } from 'workbox-range-requests'
+import { BackgroundSyncPlugin } from 'workbox-background-sync'
 import PouchDB from 'pouchdb'
 
 const db = new PouchDB('courses')
@@ -37,9 +38,20 @@ precacheAndRoute(self.__WB_MANIFEST)
 // see https://developer.chrome.com/docs/workbox/modules/workbox-core/#the-skipwaiting-wrapper-is-deprecated
 // This allows the web app to trigger skipWaiting via registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting()
-  if (event.data && event.data.type === 'DOWNLOAD_COURSE') downloadCourse(event)
-  if (event.data && event.data.type === 'DELETE_COURSE') deleteCourse(event)
+  if (event.data) {
+    if (event.data.type === 'SKIP_WAITING') self.skipWaiting()
+    if (event.data.type === 'DOWNLOAD_COURSE') downloadCourse(event)
+    if (event.data.type === 'DELETE_COURSE') deleteCourse(event)
+  }
+})
+
+
+self.addEventListener('sync', (event) => {
+  let topicRegex = new RegExp('^[\\w-]+:TOPIC\_\\d+\_COMPLETED$')
+  let questionRegex = new RegExp('^[\\w-]+:QUESTION\_\\d+\_ANSWERED')
+
+  if (topicRegex.test(event.tag)) console.log('push notification topic', event)
+  if (questionRegex.test(event.tag)) console.log('push notification question', event)
 })
 
 
@@ -47,7 +59,6 @@ self.addEventListener('message', (event) => {
 // Set up App Shell-style routing, so that all navigation requests are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
 registerRoute(({ request, url }) => {
-  console.log('app shell')
   // If this isn't a navigation, skip.
   if (request.mode !== 'navigate') {
     return false
@@ -68,14 +79,79 @@ registerRoute(({ request, url }) => {
 
 // A runtime caching route for requests the metadata of all courses
 registerRoute(
-  ({ url, request }) => {
-    console.log('course metadata')
-    if (url.pathname.endsWith('/api/courses')) console.log('%ccourse metadata successful', 'color: green')
+  ({ url }) => {
     return url.pathname.endsWith('/api/courses')
   },
   new StaleWhileRevalidate({
     cacheName: 'courses-meta'
   })
+)
+
+
+// The background sync route for marking topics as completed
+registerRoute(
+  ({ url }) => {
+    let regex = new RegExp('^[\\w-]*\\/api\\/topics\\/\\d+\\/complete$')
+    regex.test(url.pathname) && console.log('topic complete post route')
+    return regex.test(url.pathname)
+  },
+  ({ url, request, event }) => {
+    let topicId = null
+    let pathElements = url.pathname.split('/')
+    for (let element of pathElements) {
+      topicId = Number.parseInt(element)
+      if (!Number.isNaN(topicId)) {
+        break
+      }
+    }
+
+    let networkOnly = new NetworkOnly({
+      plugins: [
+        new BackgroundSyncPlugin(`TOPIC_${topicId}_COMPLETED`, {
+          maxRetentionTime: 24 * 60,
+          onSync: async ({ queue }) => {
+            await queue.replayRequests()
+          }
+        })
+      ]
+    })
+    return networkOnly.handle({ event, request })
+  },
+  'POST'
+)
+
+
+// the route to validate the provided answer of a quiz's question
+registerRoute(
+  ({ url }) => {
+    let regex = new RegExp('^[\\w-]*\\/api\\/quizzes\\/\\d+\\/questions\\/\\d+\\/validate$')
+    regex.test(url.pathname) && console.log('question answered post route')
+    return regex.test(url.pathname)
+  },
+  ({ url, event, request }) => {
+    let pathElements = url.pathname.split('/')
+    let ids = pathElements.map(element => Number.parseInt(element)).filter(Boolean)
+
+    let networkOnly = new NetworkOnly({
+      plugins: [
+        new BackgroundSyncPlugin(`QUESTION_${ids[1]}_ANSWERED_${new Date().toISOString()}`, {
+          maxRetentionTime: 24 * 60,
+          onSync: async ({ queue }) => {
+            await queue.replayRequests()
+          }
+        })
+      ]
+    })
+    return networkOnly.handle({ event, request })
+  },
+  'POST'
+)
+
+
+// The route for downloaded course
+registerRoute(
+  () => true,
+  handleRequest
 )
 
 
@@ -86,12 +162,12 @@ registerRoute(
  * @return {Promise<any>}
  */
 async function handleRequest({ event }) {
-  console.log('fetch for dl')
   const dbResponse = await db.allDocs({ include_docs: true })
   let entry = dbResponse.rows.filter(row => row.doc.requests.includes(event.request.url))
 
   if (entry.length) {
-    console.log('%cfetch for dl successful', 'color: orange')
+    console.log('%cfetched from download', 'color: orange')
+    // TODO: define a NetworkFirst or StaleWhileRevalidate strategy for status or progress requests
     let cacheFirstStrategy = new CacheFirst({
       cacheName: `dl-${entry[0].id}`,
       plugins: [
@@ -109,21 +185,17 @@ async function handleRequest({ event }) {
   return fetch(event.request)
 }
 
-registerRoute(
-  () => true,
-  handleRequest
-)
-
 
 /**
  * @param {string} msg
+ * @param {Object} data
  */
-function sendMessage(msg) {
+function sendMessage(msg, data = {}) {
   // Obtain an array of Window client objects
   self.clients.matchAll({ type: 'window' }).then(function (clients) {
     if (clients && clients.length) {
       // Respond to last focused tab
-      clients[0].postMessage({ type: msg })
+      clients[0].postMessage({ type: msg, data })
     }
   })
 }
@@ -186,6 +258,7 @@ function downloadCourse(event) {
               .catch(console.error)
 
             // put the urls in indexeddb for further respond from cache
+            // TODO: separate the status and progress requests
             db.put({
               _id: `course-${courseId}`,
               requests: [...requests]

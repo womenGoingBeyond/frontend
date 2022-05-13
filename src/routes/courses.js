@@ -16,7 +16,17 @@ export default function Courses() {
 
   useEffect(() => {
     fetchCourses()
+    init().catch(console.error)
   }, [])
+
+  async function init() {
+    if (Notification.permission === 'default') {
+      let permission = await Notification.requestPermission()
+      if (permission === 'granted') {
+        showDummyNotification()
+      }
+    }
+  }
 
   function fetchCourses() {
     const allCourses = Api.get(allCoursesAPIEndpoint)
@@ -37,6 +47,12 @@ export default function Courses() {
         setUserCourseIds(_userCourseIds)
       })
       .catch(console.error)
+  }
+
+  function showDummyNotification() {
+    new Notification('Hi there 👋', {
+      body: 'The notification is activated'
+    })
   }
 
   return (

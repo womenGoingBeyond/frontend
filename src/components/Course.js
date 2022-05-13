@@ -64,8 +64,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     event.stopPropagation()
 
     if (!isUserCourse) {
-      Api.put(`api/courses/${course.id}/register`)
-        .then(() => Api.get(cacheName))
+      Api.post(`api/courses/${course.id}/register`)
         .then(() => setIsUserCourse(true))
         .catch(console.error)
     } else {

@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import styles from '../styles/components/Course.module.css'
 import Header from '../components/Header'
-import { Button } from '@mui/material'
+import { Alert, Button, Snackbar } from '@mui/material'
 import CustomSkeleton from '../components/CustomSkeleton'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
   const [htmlElements, setHtmlElements] = useState('')
   const [isTopicCompleted, setIsTopicCompleted] = useState(false)
+  const [notificationPermitted, setNotificationPermitted] = useState(Notification.permission === 'granted')
+  const [snackbarObject, setSnackbarObject] = useState({ open: false, message: '', severity: '' })
 
   let params = useParams()
   let navigate = useNavigate()
@@ -23,9 +25,8 @@ export default function Topic() {
   useEffect(() => {
     fetchTopicInfo()
       .then(async topic => {
-        let progress = await Api.get(`api/topics/${params.topicId}/status `)
-
-        setIsTopicCompleted(progress.data ? progress.data.done : false)
+        let status = await Api.get(`api/topics/${params.topicId}/status`)
+        setIsTopicCompleted(status.data ? status.data.done : false)
         setTopic(topic)
         setHtmlElements(generateHTMLFromContent(topic.Content).join(''))
       })
@@ -97,11 +98,62 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    await Api.post(`api/topics/${params.topicId}/complete`, {
+    let response = await Api.post(`api/topics/${params.topicId}/complete`, {
       data: { 'done': true }
     })
-    navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
+
+    if (response) {
+      navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
+    } else {
+      // check if backSync is active
+      let swRegistration = await navigator.serviceWorker.ready
+      let tags = await swRegistration.sync.getTags()
+      for (let tag of tags) {
+        if (tag.includes(`TOPIC_${params.topicId}_COMPLETED`)) {
+          showNotification({ body: 'There is no connectivity. But dont worry we take care of it 😉' })
+            .catch(console.error)
+          break
+        }
+      }
+
+      // check for downloaded course, if yes, simulate the completed topic
+      const hasCache = await caches.has(`dl-course-${params.courseId}`)
+      if (hasCache) {
+        // TODO: simulate the completed topic and recalculate the lesson status and course progress
+        navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
+      }
+    }
   }
+
+  const showNotification = async ({ title = 'Hi there 👋', body }) => {
+    // check for notification, if allowed, notify otherwise show snackbar
+    let notificationPermission = Notification.permission
+    if (notificationPermission === 'default') {
+      let permission = await Notification.requestPermission()
+      if (permission === 'granted') {
+        setNotificationPermitted(true)
+        let notification = new Notification(title, { body })
+        notification.addEventListener('click', (event) => {
+          event.preventDefault()
+        })
+        return
+      } else {
+        setSnackbarObject({ open: true, message: body, severity: 'success' })
+      }
+    }
+
+    if (notificationPermitted) {
+      let notification = new Notification(title, { body })
+      notification.addEventListener('click', (event) => {
+        event.preventDefault()
+        console.log('click on notification')
+      })
+    } else {
+      setSnackbarObject({ open: true, message: body, severity: 'success' })
+    }
+  }
+
+  const handleCloseSnackbar = () => setSnackbarObject({ open: false, message: '', severity: '' })
 
   return (
     <>
@@ -124,6 +176,22 @@ export default function Topic() {
           </>
           :
           <CustomSkeleton amount={2}/>
+        }
+        {notificationPermitted ? null :
+          <Snackbar
+            open={snackbarObject.open}
+            autoHideDuration={5000}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              variant="filled"
+              severity={snackbarObject.severity}
+              sx={{ width: '100%' }}
+              children={snackbarObject.message}
+            />
+          </Snackbar>
         }
       </main>
     </>

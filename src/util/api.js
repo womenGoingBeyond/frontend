@@ -53,7 +53,7 @@ export default class Api {
       return { msg: 'no jwt' }
     }
 
-    let data
+    let data = null
     try {
       let response = await fetch(`${this.baseURL}/${endpoint.trim()}`, {
         method: 'POST',
