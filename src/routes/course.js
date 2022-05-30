@@ -54,7 +54,7 @@ export default function Course() {
 
   return (
     <>
-      <Header/>
+    <Header isSubpage="true"/>
       <main>
         {course !== null ?
           <>

@@ -3,6 +3,7 @@ import App from './App'
 import Login from './routes/login'
 import Courses from './routes/courses'
 import Register from './routes/register'
+import Categories from './routes/categories'
 import Course from './routes/course'
 import AuthMiddleware from './components/AuthMiddleware'
 import Lesson from './routes/lesson'
@@ -16,6 +17,7 @@ export default function router() {
       <Route path="/" element={<App/>}/>
       <Route path="register" element={<Register/>}/>
       <Route path="login" element={<Login/>}/>
+      <Route path={'categories'} element={<AuthMiddleware><Categories/></AuthMiddleware>}/>
       <Route path={'courses'} element={<AuthMiddleware><Courses/></AuthMiddleware>}/>
       <Route path={'courses/:courseId'} element={<AuthMiddleware><Course/></AuthMiddleware>}/>
       <Route path={'courses/:courseId/lessons/:lessonId'} element={<AuthMiddleware><Lesson/></AuthMiddleware>}/>

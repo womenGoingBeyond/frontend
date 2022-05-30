@@ -1,9 +1,15 @@
 import styles from '../styles/routes/login.module.css'
-import { Alert, Button, Snackbar, TextField } from '@mui/material'
+import mainStyles from '../styles/main.module.css'
+import { Alert, Button, Snackbar } from '@mui/material'
 import { useRef, useState } from 'react'
 import Auth from '../util/auth'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
+import IconTextField from '../components/IconTextField'
+import CustomButton from '../components/CustomButton'
+import LockIcon from '@mui/icons-material/Lock';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import Header from '../components/Header'
 
 export default function Login() {
   const [snackbarObject, setSnackbarObject] = useState({})
@@ -81,42 +87,51 @@ export default function Login() {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.logo}/>
-        <h1 children={'App Name'}/>
-        <p className={styles.register}>
-          Don't have an account?
-          <Link to={'/register'} className={styles.registerLink}>register</Link>
+    <Header isSubpage="true"/>
+      <div className={mainStyles.container}>
+        <div className={mainStyles.logo}/>
+      
+        <div className={mainStyles.form}>
+        
+       <IconTextField
+        fullWidth
+        required
+        marginTop="30px"
+        error={snackbarObject.severity === 'error'}
+        id="email"
+        placeholder="Email"
+        type="email"
+        variant="outlined"
+        inputRef={emailRef}
+          iconStart={<AlternateEmailIcon />}
+        />
+       
+        <IconTextField
+        fullWidth
+        required
+        error={snackbarObject.severity === 'error'}
+        id="password"
+        placeholder="Password"
+        type="password"
+        inputRef={passwordRef}
+          iconStart={<LockIcon />}
+        />
+        
+            <p className={styles.register}>
+            <Link to={'/register'} className={styles.registerLink}>Forgot my password</Link>
         </p>
-        <div className={styles.form}>
-          <TextField
-            fullWidth
-            required
-            error={snackbarObject.severity === 'error'}
-            id="email"
-            label="Email"
-            type="email"
-            variant="standard"
-            inputRef={emailRef}
-          />
-          <TextField
-            fullWidth
-            required
-            error={snackbarObject.severity === 'error'}
-            id="password"
-            label="Password"
-            type="password"
-            variant="standard"
-            inputRef={passwordRef}
-            inputProps={{ minLength: 4 }}
-          />
-          <Button
-            variant="contained"
-            children={'Login'}
-            sx={{ marginTop: '4rem' }}
+          <CustomButton
+          marginTop="1rem"
+            children={'Login'} 
             onClick={handleSubmit}
           />
+
+
         </div>
+
+        <div className={styles.bottomImage}
+            />
+
       </div>
       <Snackbar
         open={snackbarObject.open}

@@ -72,7 +72,7 @@ export default function Lesson() {
 
   return (
     <>
-      <Header/>
+    <Header isSubpage="true"/>
       <main>
         {lesson !== null ?
           <>
