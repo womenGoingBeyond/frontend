@@ -4,6 +4,7 @@ import Api from '../util/api'
 import Header from '../components/Header'
 import styles from '../styles/components/Course.module.css'
 import CustomSkeleton from '../components/CustomSkeleton'
+import { useTranslation } from 'react-i18next';
 
 export default function Lesson() {
   const [lesson, setLesson] = useState(null)
@@ -11,9 +12,10 @@ export default function Lesson() {
   const [quizzes, setQuizzes] = useState([])
   let params = useParams()
   let navigate = useNavigate()
+  const {t, i18n} = useTranslation()
 
-  const overviewURL = `api/lessons/${params.lessonId}?fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
-  const quizzesRequestURL = `api/lessons/${params.lessonId}/quizzes`
+  const overviewURL = `api/lessons/${params.lessonId}?locale=${i18n.language}&fields[0]=Title&fields[1]=Description&populate[Content][populate][Media][fields][0]=url&populate[topics][fields][0]=id&populate[topics][fields][0]=Title`
+  const quizzesRequestURL = `api/lessons/${params.lessonId}/quizzes?locale=${i18n.language}`
 
   useEffect(() => {
     fetchLessonInfo().catch(console.error)
@@ -72,14 +74,16 @@ export default function Lesson() {
 
   return (
     <>
-    <Header isSubpage="true"/>
+
+{lesson !== null ?
+    <Header title={lesson.Title} isSubpage="true"/>
+    : null
+}
       <main>
         {lesson !== null ?
           <>
-            <h1>{lesson.Title}</h1>
             <div className={[styles.course, styles.overview].join(' ')}>
-              <div className={styles.header}>
-              </div>
+           
               <div className={styles.description}>
                 <p>{lesson.Description.length ? lesson.Description : ''}</p>
               </div>
@@ -94,7 +98,7 @@ export default function Lesson() {
                     id={`topic-${topic.id}`}
                     onClick={() => topicClickHandler(topic.id)}
                   >
-                    <h3>{topic.Title}</h3>
+                    <div>{topic.Title}</div>
                     <div
                       className={styles.lessonsDone}
                       style={{ backgroundColor: `${topic.done ? 'rgba(0,255,0,.7)' : 'none'}` }}
@@ -114,7 +118,7 @@ export default function Lesson() {
                         id={`quiz-${quiz.id}`}
                         onClick={() => quizClickHandler(quiz.id)}
                       >
-                        <h3>{quiz.title}</h3>
+                        <div>{quiz.title}</div>
                         <p>{(+(quiz.progress) * 100) || 0}%</p>
                       </div>
                     )}

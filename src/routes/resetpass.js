@@ -1,61 +1,23 @@
-import styles from '../styles/routes/login.module.css'
 import mainStyles from '../styles/main.module.css'
 import { Alert, Button, Snackbar } from '@mui/material'
-import { useRef, useState } from 'react'
-import Auth from '../util/auth'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+import { useRef, useState } from 'react' 
 import IconTextField from '../components/IconTextField'
 import CustomButton from '../components/CustomButton'
-import LockIcon from '@mui/icons-material/Lock';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import Header from '../components/Header' 
-import { saveUserData } from '../util/helper.js'
+import Header from '../components/Header'
 import { useTranslation } from 'react-i18next';
-import { useLoading }  from '../components/LoadingContext'
 
-
-export default function Login() {
+export default function ResetPass() {
   const [snackbarObject, setSnackbarObject] = useState({})
   const emailRef = useRef()
-  const passwordRef = useRef()
-  const navigate = useNavigate()
   const {t, i18n} = useTranslation()
-  const { loading, setLoading } = useLoading();
 
-
-  /**
-   * @async
-   * @param {string} email
-   * @param {string} password
-   * @returns {Promise<void>}
-   */
-  async function loginUser({ email, password }) {
-    setLoading(true);
-    const response = await Auth.login({
-      identifier: email,
-      password: password
-    })
-    
-
-    setLoading(false);
-    if (Object.keys(response).includes('error')) {
-      handleSnackbar({ open: true, message: response.error.message, severity: 'error' })
-    } else {
-      window.sessionStorage.setItem('wgb-jwt', response.jwt)
-      // remove login route from the history stack
-
-      saveUserData(response.user)
-
-      let from = navigate.state?.from?.pathname || '/'
-      navigate(from, { replace: true })
-    }
-  }
+ 
 
   function handleSubmit() {
-    const email = emailRef.current.value, password = passwordRef.current.value
-    const isValid = validateInput({ email: emailRef.current, password: passwordRef.current })
-    isValid && loginUser({ email, password }).catch(console.error)
+    const email = emailRef.current.value
+    const isValid = validateInput({ email: emailRef.current})
+    // isValid && loginUser({ email, password }).catch(console.error)
   }
 
   /**
@@ -63,19 +25,15 @@ export default function Login() {
    * @param {HTMLInputElement} password
    * @returns {boolean}
    */
-  function validateInput({ email, password }) {
-    if (email.validity.valueMissing || password.validity.valueMissing) {
+  function validateInput({ email }) {
+    if (email.validity.valueMissing) {
       handleSnackbar({ open: true, message: 'Please give an email/password.', severity: 'error' })
       return false
     }
     if (!email.validity.valid) {
       handleSnackbar({ open: true, message: 'email is not valid', severity: 'error' })
       return false
-    }
-    if (password.validity.tooShort) {
-      handleSnackbar({ open: true, message: 'too short password', severity: 'error' })
-      return false
-    }
+    } 
 
     handleSnackbar({ open: snackbarObject.open, message: '', severity: 'success' })
     return true
@@ -104,11 +62,14 @@ export default function Login() {
       <div className={mainStyles.container}>
         <div className={mainStyles.logo}/>
       
-        <div className={mainStyles.form}> 
+        <div className={mainStyles.form}>
+        
+        <p style={{marginLeft:"20px"}}>
+        {t('resetEmailInfo')}</p>
        <IconTextField
         fullWidth
         required
-        marginTop="30px"
+        marginTop="0px"
         error={snackbarObject.severity === 'error'}
         id="email"
         placeholder={t('emailPlaceholder')}
@@ -118,31 +79,16 @@ export default function Login() {
           iconStart={<AlternateEmailIcon />}
         />
        
-        <IconTextField
-        fullWidth
-        required
-        error={snackbarObject.severity === 'error'}
-        id="password"
-        placeholder={t('passwordPlaceholder')}
-        type="password"
-        inputRef={passwordRef}
-          iconStart={<LockIcon />}
-        />
-        
-            <p className={styles.register}>
-            <Link to={'/resetpass'} className={styles.registerLink}>{t('forgotPasswordLink')}</Link>
-        </p>
+    
           <CustomButton
           marginTop="1rem"
-            children={t('loginButton')}
+            children={t('resetPasswordButton')} 
             onClick={handleSubmit}
           />
 
 
         </div>
 
-        <div className={styles.bottomImage}
-            />
 
       </div>
       <Snackbar

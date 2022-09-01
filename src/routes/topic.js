@@ -5,6 +5,7 @@ import styles from '../styles/components/Course.module.css'
 import Header from '../components/Header'
 import { Alert, Button, Snackbar } from '@mui/material'
 import CustomSkeleton from '../components/CustomSkeleton'
+import { useTranslation } from 'react-i18next'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
@@ -12,11 +13,12 @@ export default function Topic() {
   const [isTopicCompleted, setIsTopicCompleted] = useState(false)
   const [notificationPermitted, setNotificationPermitted] = useState(Notification.permission === 'granted')
   const [snackbarObject, setSnackbarObject] = useState({ open: false, message: '', severity: '' })
+  const {t, i18n} = useTranslation()
 
   let params = useParams()
   let navigate = useNavigate()
 
-  const infoURL = `api/topics/${params.topicId}?populate[Content][populate][Media][fields][0]=url`
+  const infoURL = `api/topics/${params.topicId}?locale=${i18n.language}&populate[Content][populate][Media][fields][0]=url`
   const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
   const mediaTypes = new Map([
     ['jpg', 'img'], ['jpeg', 'img'], ['png', 'img'], ['gif', 'img'], ['webp', 'img'], ['mp4', 'video'], ['mp3', 'audio']
@@ -25,7 +27,7 @@ export default function Topic() {
   useEffect(() => {
     fetchTopicInfo()
       .then(async topic => {
-        let status = await Api.get(`api/topics/${params.topicId}/status`)
+        let status = await Api.get(`api/topics/${params.topicId}/status?locale=${i18n.language}&`)
         setIsTopicCompleted(status.data ? status.data.done : false)
         setTopic(topic)
         setHtmlElements(generateHTMLFromContent(topic.Content).join(''))
@@ -98,7 +100,7 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    let response = await Api.post(`api/topics/${params.topicId}/complete`, {
+    let response = await Api.post(`api/topics/${params.topicId}/complete?locale=${i18n.language}&`, {
       data: { 'done': true }
     })
 
@@ -157,9 +159,13 @@ export default function Topic() {
 
   return (
     <>
-      <Header/>
+
+{topic !== null ? 
+    <Header isSubpage="true" title={topic.Title}/>
+    :null
+    }
       <main>
-        {topic !== null ? <h1 className={styles.topicHeader}>{topic.Title}</h1> : null}
+        {/* {topic !== null ? <h1 className={styles.topicHeader}>{topic.Title}</h1> : null} */}
         {htmlElements.length > 0 ?
           <>
             <div
@@ -168,7 +174,7 @@ export default function Topic() {
             />
             <Button
               variant="contained"
-              children={isTopicCompleted ? 'Done' : 'Complete'}
+              children={isTopicCompleted ? `${t("topicDoneButton")}` : `${t("topicCompleteButton")}` }
               sx={{ marginTop: '2rem' }}
               disabled={isTopicCompleted}
               onClick={markTopicAsDone}

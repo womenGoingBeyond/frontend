@@ -6,17 +6,21 @@ import mainStyles from '../styles/main.module.css'
 import Auth from '../util/auth'
 import Header from '../components/Header'
 import CustomSkeleton from '../components/CustomSkeleton'
-import Footer from '../components/Footer'
+import {useLocation} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 
-export default function Courses() {
+export default function Courses({ route, navigation }) {
   const [courses, setCourses] = useState([])
   const [userCourseIds, setUserCourseIds] = useState([]) 
   const [category, setCategory] = useState("") 
+  const {t, i18n} = useTranslation()
 
-  const allCoursesAPIEndpoint = `api/courses?populate[category][fields][0]=name&populate[category][fields][1]=color
+  const location = useLocation();
+
+  const allCoursesAPIEndpoint = `api/courses?locale=${i18n.language}&filters[category][id][$eq]=${location.state}&populate[category][fields][0]=name&populate[category][fields][1]=color
     &populate[Content][populate][Media][fields][0]=url&sort[0]=id`.replaceAll(' ', '')
-  const userCoursesAPIEndpoint = `api/courses?fields[0]=id&populate=[users]&filters[users][id][$eq]=${Auth.getUserIdFromJWT()}`
+  const userCoursesAPIEndpoint = `api/courses?locale=${i18n.language}&fields[0]=id&populate=[users]&filters[users][id][$eq]=${Auth.getUserIdFromJWT()}`
 
   useEffect(() => {
     fetchCourses()
@@ -63,9 +67,8 @@ export default function Courses() {
 
   return (
     <>
-      <Header title={category}/>
-      <main>
-        <div className={mainStyles.titleText}>Courses Overview</div>
+      <Header title={category} isSubpage="true"/>
+      <main> 
         <section className={styles.courses}>
           {courses.length > 0
             ? courses.map((course, index) =>
@@ -82,7 +85,6 @@ export default function Courses() {
           }
         </section>
       </main>
-    <Footer />
     </>
   )
 }

@@ -9,6 +9,9 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import Header from '../components/Header'
 import IconTextField from '../components/IconTextField'
 import CustomButton from '../components/CustomButton'
+import { saveUserData } from '../util/helper.js'
+import { useTranslation } from 'react-i18next';
+import { useLoading }  from '../components/LoadingContext'
 
 export default function Register() {
   const [snackbarObject, setSnackbarObject] = useState({})
@@ -19,6 +22,8 @@ export default function Register() {
   const passwordMinLength = 6 // The default length for password in Strapi
   const emailErrorArray = ['input', 'email']
   const passErrorArray = ['input', 'pass', 'eq']
+  const {t, i18n} = useTranslation()
+  const { loading, setLoading } = useLoading();
 
   /**
    * The **registerUser** function registers the user based on the email and password given in UI.<br>
@@ -29,16 +34,42 @@ export default function Register() {
    * @returns {Promise<void>}
    */
   async function registerUser() {
+    setLoading(true);
     // The response and the including JWT are ignored. @see requirements
     const response = await Auth.register({
       email: emailRef.current.value.trim(),
       password: passwordRef.current.value
     })
 
+    setLoading(false);
     if (Object.keys(response).includes('error')) {
       handleSnackbar({open: true, id: 'input', message: response.error.message, severity: 'error'})
     } else {
-      navigate('/login')
+      loginUser({ email: "demo@demo.de", password: "demodemo" }).catch(console.error)
+    }
+  }
+
+
+  /**
+   * @async
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+   async function loginUser({ email, password }) {
+    const response = await Auth.login({
+      identifier: email,
+      password: password
+    })
+
+    if (Object.keys(response).includes('error')) {
+      handleSnackbar({ open: true, message: response.error.message, severity: 'error' })
+    } else {
+      window.sessionStorage.setItem('wgb-jwt', response.jwt)
+
+      saveUserData(response.user)
+      // remove login route from the history stack 
+      navigate("/welcome", { replace: true })
     }
   }
 
@@ -118,7 +149,7 @@ export default function Register() {
             required
             error={(emailErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="email"
-            placeholder="Email"
+            placeholder={t('emailPlaceholder')}
             type="email"
             variant="outlined"
             inputRef={emailRef}
@@ -130,7 +161,7 @@ export default function Register() {
             required
             error={(passErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="password"
-            placeholder="Password"
+            placeholder={t('passwordPlaceholder')}
             type="password"
             inputRef={passwordRef}
             iconStart={<LockIcon />}
@@ -142,7 +173,7 @@ export default function Register() {
             required
             error={(passErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="password-confirmation"
-            placeholder="Confirm Password"
+            placeholder={t('repeatPasswordPlaceholder')}
             type="password"
             inputRef={passwordConfirmationRef}
             iconStart={<LockIcon />}
@@ -151,7 +182,7 @@ export default function Register() {
               
 
         <CustomButton 
-            children={'Register'}
+            children={t('signupButton')}
             onClick={handleSubmit}
           />
         </div>

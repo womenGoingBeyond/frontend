@@ -4,11 +4,14 @@ import Api from '../util/api'
 import Header from '../components/Header'
 import CustomSkeleton from '../components/CustomSkeleton'
 import styles from '../styles/components/Course.module.css'
+import { useTranslation } from 'react-i18next'
 
 export default function Quiz() {
+  const {t, i18n} = useTranslation()
   const [quiz, setQuiz] = useState(null)
   let params = useParams(), navigate = useNavigate()
   let questionsOverviewURL = `api/quizzes/${params.quizId}/questions`
+  
 
   useEffect(() => {
     Api.get(questionsOverviewURL)
@@ -24,12 +27,16 @@ export default function Quiz() {
 
   return (
     <>
-      <Header/>
+    
+{quiz !== null ? 
+    <Header isSubpage="true" title={quiz.title}/>
+    :null
+    }
       <main>
         {quiz ?
           <>
-            <h1>{quiz.title}</h1>
             <div className={styles.quizContainer}>
+                    <div className={styles.lessonsWrapper}>
               {quiz.questions.length > 0 ? quiz.questions.map((question, index) =>
                   <div
                     key={question.id + index}
@@ -37,7 +44,7 @@ export default function Quiz() {
                     id={`topic-${question.id}`}
                     onClick={() => navigateToQuestion(question.id)}
                   >
-                    <h3>Question {index + 1}</h3>
+                    <div>{t("questionTopic")} {index + 1}</div>
                     <div
                       className={styles.lessonsDone}
                       style={{ backgroundColor: `${question.state ? 'rgba(0,255,0,.7)' : 'none'}` }}
@@ -45,6 +52,7 @@ export default function Quiz() {
                   </div>
                 )
                 : null}
+                </div>
             </div>
           </>
           :

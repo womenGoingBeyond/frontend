@@ -1,0 +1,53 @@
+{
+    "loginButton": "Login",
+    "signupButton": "Signup",
+    "backButton": "Back",
+    "logoutButton": "Logout",
+    "nextButton": "Next",
+    "saveChangesButton": "Save changes",
+
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "repeatPasswordPlaceholder": "Confirm password",
+    "prenamePlaceholder": "Prename",
+    "lastnamePlaceholder": "Lastname",
+    "birthdayPlaceholder": "Birthday",
+    "levelOfEducationPlaceholder": "Level of Education",
+    
+    "forgotPasswordLink": "Forgot my password",
+    "resetPasswordButton": "Reset password",
+    "resetEmailInfo": "Enter your email to reset your password",
+
+    "categoriesHeader": "Categories",
+    "completedLessonHeader": "Lesson Completed",
+    "completedLessonsHeader": "Lessons Completed",
+    "myClassesHeader": "My Classes",
+    "myProfileHeader": "My Profile",
+    "settingsHeader": "Settings",
+    
+    "welcomeMessage": "Now that your account creation was successful, you can enter the learning platform.",
+
+    "topicDoneButton": "Done",
+    "topicCompleteButton": "Complete",
+
+    "infoTotalEnergy": "Energy total",
+    "infoCertificates": "Certificates",
+
+    "nextQuestion": "next",
+    "submitAnswers": "submit",
+    "questionTopic": "Question",
+
+    
+    "sectionProfileSettings": "Profile",
+    "sectionSystemSettings": "System",
+    "downloadOptionLabel": "Downloads only with WiFi connection",
+    
+    "continueCourse": "continue",
+    "startCourse": "start",
+
+    "exploreTabLabel": "Explore",
+    "myClassesTabLabel": "My Classes",
+    "profileTabLabel": "Profile"
+
+    
+}

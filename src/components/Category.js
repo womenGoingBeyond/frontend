@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types'
-import styles from '../styles/components/Course.module.css'
-import { useEffect, useState } from 'react'
+import styles from '../styles/components/Category.module.css'
 import { useNavigate } from 'react-router'
-import DownloadIcon from '@mui/icons-material/Download'
-import DownloadDoneIcon from '@mui/icons-material/DownloadDone'
-import DeleteIcon from '@mui/icons-material/Delete'
 
 export default function Category({ category, keyValue }) {
   const navigate = useNavigate()
@@ -14,6 +10,11 @@ export default function Category({ category, keyValue }) {
 //     init().catch(console.error)
 //   }, [])
 
+function showCoursesForCategory (){
+    navigate(`/courses/`, {
+      state: category.id,
+    })
+}
 
   return (
     <>
@@ -22,9 +23,10 @@ export default function Category({ category, keyValue }) {
           className={styles.category}
           key={keyValue}
           style={{ backgroundColor: category.Color || '#aaa' }}
-        //   onClick={showMoreHandler}
+          onClick={showCoursesForCategory}
         >
-          <h4>{category.Name}</h4>
+          <h3>{category.Name}</h3>
+          <p>{category.description}</p>
         </div>
     </>
   )

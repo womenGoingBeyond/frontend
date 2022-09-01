@@ -27,12 +27,37 @@
     background-position: center;
     background-size: contain;
   }
+
+
+  .welcomeGirl {
+    width: 180px;
+    height: 180px;
+    margin-top:0px;
+    margin-bottom:0px;
+    background-image: url("../img/Girl1.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+
+
+  .welcomeMessage {
+    width: 80%;
+    height: 100px;
+    margin-top:0px;
+    margin-bottom:0px;
+    background-image: url("../img/welcome.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
   
   .logoStart {
-    width: 100%;
+    width: 20%;
     height: 300px;
-    margin-top:80px;
-    margin-bottom:150px;
+    margin-top:50px;
+    margin-bottom:10px;
     background-image: url("../img/LogoFront.svg");
     background-repeat: no-repeat;
     background-position: center;
@@ -53,3 +78,33 @@
     text-align: left;
     width: 100%;
   }
+
+
+  .categories{
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  }
+
+  .profileTable{
+    width:100%;
+    text-align: center;
+  }
+
+  .profileTable td{
+    vertical-align: middle;
+    font-size:14pt;
+    color: #aaa;
+  }
+
+
+  .profileTable th{
+    vertical-align: middle;
+    font-size:22pt;
+    color: #666;
+  }
+ 
+.hidden{
+  display:none!important;
+}

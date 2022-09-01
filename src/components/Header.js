@@ -3,9 +3,9 @@ import {Button} from '@mui/material'
 import Auth from '../util/auth'
 import {useNavigate} from 'react-router'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import MenuIcon from '@mui/icons-material/Menu'; 
+import SettingsIcon from '@mui/icons-material/Settings';
 
-export default function Header ({ isSubpage = false, title = "" }) {
+export default function Header ({ isSubpage = false, title = "" , showSettingsIcon = false, hideBorderBottom = false}) {
   const navigate = useNavigate()
 
   function logoutUser() {
@@ -14,7 +14,11 @@ export default function Header ({ isSubpage = false, title = "" }) {
   }
 
   function routerGoBack() {
-    navigate('/')
+    navigate(-1)
+  }
+  
+  function goToSettings() {
+    navigate("/settings")
   }
   
 
@@ -24,15 +28,23 @@ export default function Header ({ isSubpage = false, title = "" }) {
     <>
       <header 
 
-        className={Auth.getUserIdFromJWT() != null ? styles.header + " " + styles.withBorder : styles.header}
+        className={(Auth.getUserIdFromJWT() != null && !hideBorderBottom ) ? styles.header + " " + styles.withBorder : styles.header}
         >
       <div className={styles.headerSub}>
-        {Auth.getUserIdFromJWT() == null   && isSubpage   &&  
+        {isSubpage   &&  
               <Button
+              style={{
+                maxWidth: "50px",
+                maxHeight: "50px",
+                minWidth: "30px",
+                minHeight: "30px",
+                marginLeft: "20px",
+                marginRight: "-20px",
+              }}
               onClick={routerGoBack}
 
                 sx={{ 
-                  color: "#000",
+                  color: "#666",  
                   backgroundColor: "#f9fafb",
                   ':hover': {
                       bgcolor: '#eeeeee',
@@ -44,36 +56,28 @@ export default function Header ({ isSubpage = false, title = "" }) {
               </Button>   
         }
 
-        {Auth.getUserIdFromJWT() != null   &&  !isSubpage && 
         
+
+       <div className={styles.headerTitle} >{title}</div>
+       </div>
+
+ 
+
+       <div>
+        {showSettingsIcon &&  
         <Button
-        // onClick={routerGoBack}
+        onClick={goToSettings}
 
           sx={{ 
-            color: "#000",
+            color: "#666",
             backgroundColor: "#f9fafb",
             ':hover': {
                 bgcolor: '#eeeeee',
             },
            }}
         >
-        <MenuIcon/>
+        <SettingsIcon />
         </Button>   
-        }
-
-
-       <div className={styles.headerTitle} >{title}</div>
-       </div>
-
-
-
-
-
-      <div>
-        {Auth.getUserIdFromJWT() != null   &&  
-            <Button className={styles.logoutButton} variant="contained" onClick={logoutUser} sx={{marginRight: '1rem'}} disableElevation>
-              LOG OUT
-            </Button> 
         }
         </div>
 
