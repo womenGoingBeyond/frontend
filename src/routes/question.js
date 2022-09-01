@@ -5,20 +5,36 @@ import Api from '../util/api'
 import Header from '../components/Header'
 import { Alert, Button, Snackbar } from '@mui/material'
 import CustomSkeleton from '../components/CustomSkeleton'
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import CustomButton from '../components/CustomButton'
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormGroup from '@mui/material/FormGroup';
+import { useTranslation } from 'react-i18next'
 
 export default function Question() {
   const [question, setQuestion] = useState(null)
+  const [quiz, setQuiz] = useState("")
   const [answerState, setAnswerState] = useState({ isSubmitted: false, isCorrect: false })
   const [notificationPermitted, setNotificationPermitted] = useState(Notification.permission === 'granted')
   const [snackbarObject, setSnackbarObject] = useState({ open: false, message: '', severity: '' })
+  const {t, i18n} = useTranslation()
 
   let params = useParams(), navigate = useNavigate()
-  let infoURL = `api/quizzes/${params.quizId}/questions/${params.questionId}`
+  let infoURL = `api/quizzes/${params.quizId}/questions/${params.questionId}?locale=${i18n.language}`
+  let questionsOverviewURL = `api/quizzes/${params.quizId}/questions?locale=${i18n.language}`
 
   useEffect(() => {
     Api.get(infoURL)
       .then(data => {
         setQuestion(data)
+        // console.log(data)
+      })
+      .catch(console.error)
+      Api.get(questionsOverviewURL)
+      .then(quiz => {
+        setQuiz(quiz.data.title)
       })
       .catch(console.error)
   }, [])
@@ -26,6 +42,7 @@ export default function Question() {
   const validateAnswer = async () => {
     let answers = document.querySelectorAll(`.${styles.quizAnswer}`),
       states = [], input
+
 
     for (let answer of answers) {
       input = answer.querySelector('input')
@@ -36,6 +53,7 @@ export default function Question() {
     // User did not select anything
     if (states.length === 0) return
 
+    //console.log(`api/quizzes/${params.quizId}/questions/${params.questionId}/validate`)
     let response = await Api.post(`api/quizzes/${params.quizId}/questions/${params.questionId}/validate`, {
       'answer_ids': states
     })
@@ -99,39 +117,79 @@ export default function Question() {
   const handleCloseSnackbar = () => setSnackbarObject({ open: false, message: '', severity: '' })
 
   return (
-    <>
-      <Header/>
+    <> 
+    <Header isSubpage="true" title={quiz}/> 
       <main>
         {question ?
           <>
             <div className={styles.quizContainer}>
-              <h2 className={styles.quizQuestion}>{question.question}</h2>
+              <h3 className={styles.quizQuestion}>{question.question}</h3>
               <div className={styles.quizAnswers}>
+              {question.type === 'single' ?  
+                <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    name="check"
+                >
+                          
                 {question.answers.map((answer, index) =>
-                  <div
-                    key={answer + index}
-                    className={styles.quizAnswer}
-                    id={`answer-${answer.id}`}
-                  >
-                    <label htmlFor={`answer-${index}`}>{answer.content}</label>
-                    <input
-                      type={question.type === 'single' ? 'radio' : 'checkbox'}
+                          <div
+                            key={answer + index}
+                            className={styles.quizAnswer}
+                            id={`answer-${answer.id}`}
+                          > 
+
+                  <FormControlLabel value={`answer-${index}`} control={
+                  <Radio 
+                  id={`answer-${index}`}
+                  name="check"
+                  defaultChecked={question.provided_answer_ids.includes(answer.id)}
+                  sx={{
+                    color: "#666",
+                    '&.Mui-checked': {
+                      color: "#ce6328",
+                    },
+                  }}
+                  />
+                  } label={answer.content} />
+                                  </div>
+                )}
+                </RadioGroup>
+  
+              : 
+              <FormGroup>
+                  {question.answers.map((answer, index) =>
+                    <div
+                      key={answer + index}
+                      className={styles.quizAnswer}
+                      id={`answer-${answer.id}`}
+                    >
+                      <FormControlLabel control={<Checkbox
                       id={`answer-${index}`}
                       name="check"
                       defaultChecked={question.provided_answer_ids.includes(answer.id)}
-                    />
-                  </div>
-                )}
+                  sx={{
+                    color: "#666",
+                    '&.Mui-checked': {
+                      color: "#ce6328",
+                    },
+                  }}
+                />} label={answer.content} />
+                    </div>
+                  )}
+              </FormGroup>
+              }  
+
+              
               </div>
             </div>
-            <Button
-              variant="contained"
-              children={answerState.isCorrect ? 'next' : 'submit'}
-              color={answerState.isCorrect ? 'success' : 'primary'}
-              type={'submit'}
-              sx={{ marginTop: '2rem' }}
-              onClick={answerState.isCorrect ? backToQuizOverview : validateAnswer}
-            />
+        <CustomButton 
+        style={{ marginTop:"40px", width: "100%"}}
+        children={answerState.isCorrect ? `${t("nextQuestion")}` : `${t("submitAnswers")}`}
+        customBGColor={answerState.isCorrect ? '#009900' : ''}
+        onClick={answerState.isCorrect ? backToQuizOverview : validateAnswer}
+          />
+
+   
           </>
           :
           <CustomSkeleton/>

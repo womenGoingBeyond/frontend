@@ -1,9 +1,17 @@
 import styles from '../styles/routes/register.module.css'
+import mainStyles from '../styles/main.module.css'
 import {Alert, Button, Snackbar, TextField} from '@mui/material'
 import {useRef, useState} from 'react'
 import Auth from '../util/auth'
 import {useNavigate} from 'react-router'
-import {Link} from 'react-router-dom'
+import LockIcon from '@mui/icons-material/Lock';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import Header from '../components/Header'
+import IconTextField from '../components/IconTextField'
+import CustomButton from '../components/CustomButton'
+import { saveUserData } from '../util/helper.js'
+import { useTranslation } from 'react-i18next';
+import { useLoading }  from '../components/LoadingContext'
 
 export default function Register() {
   const [snackbarObject, setSnackbarObject] = useState({})
@@ -14,6 +22,8 @@ export default function Register() {
   const passwordMinLength = 6 // The default length for password in Strapi
   const emailErrorArray = ['input', 'email']
   const passErrorArray = ['input', 'pass', 'eq']
+  const {t, i18n} = useTranslation()
+  const { loading, setLoading } = useLoading();
 
   /**
    * The **registerUser** function registers the user based on the email and password given in UI.<br>
@@ -24,16 +34,42 @@ export default function Register() {
    * @returns {Promise<void>}
    */
   async function registerUser() {
+    setLoading(true);
     // The response and the including JWT are ignored. @see requirements
     const response = await Auth.register({
       email: emailRef.current.value.trim(),
       password: passwordRef.current.value
     })
 
+    setLoading(false);
     if (Object.keys(response).includes('error')) {
       handleSnackbar({open: true, id: 'input', message: response.error.message, severity: 'error'})
     } else {
-      navigate('/login')
+      loginUser({ email: "demo@demo.de", password: "demodemo" }).catch(console.error)
+    }
+  }
+
+
+  /**
+   * @async
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+   async function loginUser({ email, password }) {
+    const response = await Auth.login({
+      identifier: email,
+      password: password
+    })
+
+    if (Object.keys(response).includes('error')) {
+      handleSnackbar({ open: true, message: response.error.message, severity: 'error' })
+    } else {
+      window.sessionStorage.setItem('wgb-jwt', response.jwt)
+
+      saveUserData(response.user)
+      // remove login route from the history stack 
+      navigate("/welcome", { replace: true })
     }
   }
 
@@ -100,53 +136,60 @@ export default function Register() {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.logo}/>
-        <h1 children={'App Name'}/>
-        <p className={styles.register}>
-          You have an account?
-          <Link to={'/login'} className={styles.registerLink} children={'login'}/>
+    <Header isSubpage="true"/>
+      <div className={mainStyles.container}>
+        <div className={mainStyles.logo}/>
+       
+        <p className={styles.registerText}>
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
         </p>
-        <div className={styles.form}>
-          <TextField
+        <div className={mainStyles.form}>
+            <IconTextField
             fullWidth
             required
             error={(emailErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="email"
-            label="Email"
+            placeholder={t('emailPlaceholder')}
             type="email"
-            variant="standard"
+            variant="outlined"
             inputRef={emailRef}
-          />
-          <TextField
+              iconStart={<AlternateEmailIcon />}
+            />
+
+            <IconTextField
             fullWidth
             required
             error={(passErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="password"
-            label="Password"
+            placeholder={t('passwordPlaceholder')}
             type="password"
-            variant="standard"
             inputRef={passwordRef}
+            iconStart={<LockIcon />}
             inputProps={{minLength: passwordMinLength}}
-          />
-          <TextField
+            />
+            
+            <IconTextField
             fullWidth
             required
             error={(passErrorArray.includes(snackbarObject.id)) && snackbarObject.severity === 'error'}
             id="password-confirmation"
-            label="Confirm Password"
+            placeholder={t('repeatPasswordPlaceholder')}
             type="password"
-            variant="standard"
             inputRef={passwordConfirmationRef}
+            iconStart={<LockIcon />}
             inputProps={{minLength: passwordMinLength}}
-          />
-          <Button
-            variant="contained"
-            children={'Register'}
-            sx={{marginTop: '4rem'}}
+            />
+              
+
+        <CustomButton 
+            children={t('signupButton')}
             onClick={handleSubmit}
           />
         </div>
+
+        <div className={styles.bottomImage}
+            />
+
       </div>
       <Snackbar
         open={snackbarObject.open}

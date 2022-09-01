@@ -2,17 +2,25 @@ import { useEffect, useState } from 'react'
 import Api from '../util/api'
 import Course from '../components/Course'
 import styles from '../styles/routes/courses.module.css'
+import mainStyles from '../styles/main.module.css'
 import Auth from '../util/auth'
 import Header from '../components/Header'
 import CustomSkeleton from '../components/CustomSkeleton'
+import {useLocation} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-export default function Courses() {
+
+export default function Courses({ route, navigation }) {
   const [courses, setCourses] = useState([])
-  const [userCourseIds, setUserCourseIds] = useState([])
+  const [userCourseIds, setUserCourseIds] = useState([]) 
+  const [category, setCategory] = useState("") 
+  const {t, i18n} = useTranslation()
 
-  const allCoursesAPIEndpoint = `api/courses?populate[category][fields][0]=name&populate[category][fields][1]=color
+  const location = useLocation();
+
+  const allCoursesAPIEndpoint = `api/courses?locale=${i18n.language}&filters[category][id][$eq]=${location.state}&populate[category][fields][0]=name&populate[category][fields][1]=color
     &populate[Content][populate][Media][fields][0]=url&sort[0]=id`.replaceAll(' ', '')
-  const userCoursesAPIEndpoint = `api/courses?fields[0]=id&populate=[users]&filters[users][id][$eq]=${Auth.getUserIdFromJWT()}`
+  const userCoursesAPIEndpoint = `api/courses?locale=${i18n.language}&fields[0]=id&populate=[users]&filters[users][id][$eq]=${Auth.getUserIdFromJWT()}`
 
   useEffect(() => {
     fetchCourses()
@@ -20,6 +28,7 @@ export default function Courses() {
   }, [])
 
   async function init() {
+
     if (Notification.permission === 'default') {
       let permission = await Notification.requestPermission()
       if (permission === 'granted') {
@@ -45,6 +54,7 @@ export default function Courses() {
 
         results[0].status === 'fulfilled' && setCourses(results[0].value.data)
         setUserCourseIds(_userCourseIds)
+        setCategory(results[0].value.data[0].category.Name)
       })
       .catch(console.error)
   }
@@ -57,9 +67,8 @@ export default function Courses() {
 
   return (
     <>
-      <Header/>
-      <main>
-        <h1>Courses</h1>
+      <Header title={category} isSubpage="true"/>
+      <main> 
         <section className={styles.courses}>
           {courses.length > 0
             ? courses.map((course, index) =>

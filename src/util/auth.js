@@ -20,7 +20,9 @@ export default class Auth {
    */
   static async register({email, password}) {
     const url = `${this.baseURL}/api/auth/local/register`
-
+    console.log("email", email);
+    console.log("username", email.replace('@', '_'));
+    console.log("password", password);
     const response = await fetch(url, {
       method: 'POST',
       mode: 'cors',
@@ -35,6 +37,7 @@ export default class Auth {
         'blocked': true
       })
     })
+    console.log("response", response);
     return await response.json()
   }
 

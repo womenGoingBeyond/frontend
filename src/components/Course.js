@@ -6,6 +6,10 @@ import Api from '../util/api'
 import DownloadIcon from '@mui/icons-material/Download'
 import DownloadDoneIcon from '@mui/icons-material/DownloadDone'
 import DeleteIcon from '@mui/icons-material/Delete'
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
+import { useLoading }  from '../components/LoadingContext'
 
 export default function Course({ course, keyValue, userCourse, cacheName }) {
   const [progress, setProgress] = useState(0)
@@ -13,6 +17,8 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
   const [isUserCourse, setIsUserCourse] = useState(userCourse)
   const [isCourseDownloaded, setIsCourseDownloaded] = useState(false)
   const navigate = useNavigate()
+  const {t, i18n} = useTranslation()
+  const { loading, setLoading } = useLoading();
 
   useEffect(() => {
     // check if the course is already downloaded
@@ -40,6 +46,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
   const handleServiceWorkerMessages = (event) => {
     if (event.data && event.data.type === 'DOWNLOAD_COMPLETED') {
       console.log('done')
+      setLoading(false);
       updateDownloadState(true)
     }
 
@@ -74,6 +81,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
 
   // check for background fetch API support
   const downloadCourse = (event) => {
+    // setLoading(true);
     event.stopPropagation()
     event.preventDefault()
     fallbackFetch()
@@ -97,18 +105,34 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     })
   }
 
+  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 7,
+    marginTop: 6,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: "#ACCB53",
+    },
+  }));
+
   return (
     <>
       {showMore ?
         <div
           id={`course-${course.id}`}
-          className={[styles.course, styles.overview].join(' ')}
+          className={[styles.course].join(' ')}
           key={keyValue}
           onClick={showMoreHandler}
         >
           <div className={styles.header}>
-            <h4>{course.Title}</h4>
-            {isUserCourse ? <p>{progress}%</p> : null}
+          <h4>{course.Title}</h4>
+         <p className={styles.courseProgress}>
+            <div className={styles.progress}> {progress}/100% <div className={styles.lightning}/></div>
+         
+          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress} /></p> 
           </div>
           <div className={styles.img}>
             <img
@@ -127,6 +151,8 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           <div className={styles.description}>
             <p>{course.Description.length ? course.Description : ''}</p>
           </div>
+
+          <div className={styles.horizontalLine}/>
           <div className={styles.footer}>
             {isUserCourse ?
               <div>
@@ -140,7 +166,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
               </div>
               : null
             }
-            <span onClick={registerOrContinueHandler}>{isUserCourse ? 'continue' : 'start'}</span>
+            <span onClick={registerOrContinueHandler}>{isUserCourse ? `${t("continueCourse")}` : `${t("startCourse")}`}</span>
           </div>
         </div>
         :
@@ -151,8 +177,14 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           style={{ backgroundColor: course.category.Color || '#aaa' }}
           onClick={showMoreHandler}
         >
+
+        <div className={styles.header}>
           <h4>{course.Title}</h4>
-          {isUserCourse ? <p>{progress}%</p> : null}
+         <p className={styles.courseProgress}>
+            <div className={styles.progress}> {progress}/100% <div className={styles.lightning}/></div>
+         
+          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress} /></p>
+          </div> 
         </div>
       }
     </>

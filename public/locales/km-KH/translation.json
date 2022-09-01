@@ -1,0 +1,52 @@
+{
+    "loginButton": "ចូល",
+    "signupButton": "ចុះឈ្មោះ",
+    "backButton": "ត្រឡប់មកវិញ",
+    "logoutButton": "ចាកចេញ",
+    "nextButton": "បន្ទាប់",
+
+    "emailPlaceholder": "អ៊ីមែល",
+    "passwordPlaceholder": "ពាក្យសម្ងាត់",
+    "repeatPasswordPlaceholder": "បញ្ជាក់ពាក្យសម្ងាត់",
+    "prenamePlaceholder": "ឈ្មោះរបស់អ្នក",
+    "lastnamePlaceholder": "នាមត្រកូល",
+    "birthdayPlaceholder": "ថ្ងៃខែឆ្មាំកំណើត",
+    "levelOfEducationPlaceholder": "កម្រិតនៃការអប់រំ",
+    
+    "forgotPasswordLink": "ភ្លេចពាក្យសម្ងាត់របស់ខ្ញុំ",
+    "resetPasswordButton": "កំណត់ពាក្យសម្ងាត់ឡើងវិញ",
+    "resetEmailInfo": "បញ្ចូលអ៊ីមែលរបស់អ្នកដើម្បីកំណត់ពាក្យសម្ងាត់របស់អ្នកឡើងវិញ",
+
+    "categoriesHeader": "ប្រភេទ",
+    "completedLessonHeader": "មេរៀនបានបញ្ចប់",
+    "completedLessonsHeader": "មេរៀនបានបញ្ចប់",
+    "myClassesHeader": "ថ្នាក់របស់ខ្ញុំ",
+    "myProfileHeader": "ប្រវត្តិរូបរបស់ខ្ញុំ",
+    "settingsHeader": "ការកំណត់",
+    
+    "welcomeMessage": "ឥឡូវនេះការបង្កើតគណនីរបស់អ្នកបានជោគជ័យ អ្នកអាចចូលទៅក្នុងវេទិកាសិក្សា។",
+
+    "topicDoneButton": "រួចរាល់",
+    "topicCompleteButton": "ពេញលេញ",
+
+    "infoTotalEnergy": "ថាមពលសរុប",
+    "infoCertificates": "វិញ្ញាបនបត្រ",
+
+    "nextQuestion": "បន្ទាប់",
+    "submitAnswers": "ដាក់ស្នើ",
+    "questionTopic": "សំណួរ",
+
+    
+    "sectionProfileSettings": "ប្រវត្តិរូប",
+    "sectionSystemSettings": "ប្រព័ន្ធ",
+    "downloadOptionLabel": "ទាញយកតែជាមួយការភ្ជាប់វ៉ាយហ្វាយ",
+    
+    "continueCourse": "បន្ត",
+    "startCourse": "ចាប់ផ្តើម",
+
+    "exploreTabLabel": "រុករក",
+    "myClassesTabLabel": "ថ្នាក់របស់ខ្ញុំ",
+    "profileTabLabel": "ប្រវត្តិរូប"
+
+    
+}

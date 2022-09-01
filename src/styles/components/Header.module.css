@@ -1,11 +1,40 @@
 .header {
+    position:fixed;
+    height: 50px;
     width: 100%;
-    height: auto;
     min-height: 50px;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-end;
     align-items: center;
-    background-color: blue;
-    padding: 10px 0;
+    padding: 10px 0px;
+    z-index: 900;
+    background-color: #f9fafb;
+    justify-content: space-between;
+    color:#444;
+}
+
+.withBorder{
+    -webkit-box-shadow: 0px 2px 5px 0px rgba(135,132,135,1);
+    -moz-box-shadow: 0px 2px 5px 0px rgba(135,132,135,1);
+    box-shadow: 0px 2px 5px 0px rgba(135,132,135,1);
+}
+
+
+.headerSub{
+    flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+.headerTitle{
+    font-weight: 600;
+    font-size: 16pt;
+    margin-left:20px;
+}
+
+.button {
+    padding:0px!important;
+    width:10px!important;
 }
