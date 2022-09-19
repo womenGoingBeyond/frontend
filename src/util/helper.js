@@ -1,7 +1,7 @@
 
 import Data from './data'
 
-var userSelectedLanguage = window.sessionStorage.getItem('language');
+var userSelectedLanguage = window.sessionStorage.getItem('language', "");
 function saveUserSelectedLanguage(language){
   userSelectedLanguage = language;
   window.sessionStorage.setItem('language', language)
