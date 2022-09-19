@@ -54,7 +54,7 @@ export default function Courses({ route, navigation }) {
 
         results[0].status === 'fulfilled' && setCourses(results[0].value.data)
         setUserCourseIds(_userCourseIds)
-        setCategory(results[0].value.data[0].category.Name)
+        setCategory(results[0].value.data[0].category)
       })
       .catch(console.error)
   }
@@ -67,7 +67,7 @@ export default function Courses({ route, navigation }) {
 
   return (
     <>
-      <Header title={category} isSubpage="true"/>
+      <Header title={category.Name} isSubpage="true" goBackPath={`/`}/>
       <main> 
         <section className={styles.courses}>
           {courses.length > 0

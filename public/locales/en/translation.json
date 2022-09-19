@@ -47,7 +47,16 @@
 
     "exploreTabLabel": "Explore",
     "myClassesTabLabel": "My Classes",
-    "profileTabLabel": "Profile"
+    "profileTabLabel": "Profile",
+
+
+
+    "correctAnswerMessage": "Gratulation! This answer is correct.",
+    "wrongAnswerMessage": "This answer is wrong. Please try again!"
+
+    
+    
+
 
     
 }

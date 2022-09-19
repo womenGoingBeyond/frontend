@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-export default function Header ({ isSubpage = false, title = "" , showSettingsIcon = false, hideBorderBottom = false}) {
+export default function Header ({ isSubpage = false, title = "" , showSettingsIcon = false, hideBorderBottom = false, goBackPath = -1, goBackState=0}) {
   const navigate = useNavigate()
 
   function logoutUser() {
@@ -14,7 +14,16 @@ export default function Header ({ isSubpage = false, title = "" , showSettingsIc
   }
 
   function routerGoBack() {
-    navigate(-1)
+    console.log(goBackPath)
+    console.log(goBackState)
+    if(goBackState!=0){
+      navigate(goBackPath, {
+        state: goBackState,
+      })
+    }else{
+      navigate(goBackPath)
+    }
+    
   }
   
   function goToSettings() {

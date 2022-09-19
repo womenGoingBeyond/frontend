@@ -80,50 +80,50 @@ const Certificate = ({ category, course , nameOfStudent, certNumber, certDate}) 
                     
                 <Image style={styles.backgroundImage} src={backgroundImage} >
                 </Image> 
-                <div style={styles.mainContent} >
+                <View style={styles.mainContent} >
 
-                <div style={styles.bigText} >
+                <View style={styles.bigText} >
                     <Text>{category}</Text>  
-                </div>
-                <div style={styles.bigTextColor} >
+                </View>
+                <View style={styles.bigTextColor} >
                     <Text>Certificate</Text>  
-                </div>
+                </View>
 
 
-                <div style={styles.smallText} >
+                <View style={styles.smallText} >
                     <Text>PROUDLY PRESENTED TO</Text>  
-                </div>
+                </View>
 
 
-                <div style={styles.bigText} >
+                <View style={styles.bigText} >
                     <Text>{nameOfStudent}</Text>  
-                </div>
+                </View>
 
 
-                <div style={styles.secondSmallText} >
+                <View style={styles.secondSmallText} >
                     <Text>for completing "{course}"</Text>  
-                </div>
+                </View>
 
 
-                <div style={styles.secondSmallText} >
+                <View style={styles.secondSmallText} >
                     <Text>This certificate was awareded by:</Text>  
-                </div>
+                </View>
 
 
-                <div style={styles.nameOfDirector} >
+                <View style={styles.nameOfDirector} >
                     <Text>ALEXIS ALCALA</Text>  
-                </div>
+                </View>
 
-                <div style={styles.roleOfCEO} >
+                <View style={styles.roleOfCEO} >
                     <Text>Director</Text>  
-                </div>
+                </View>
 
-                </div>
+                </View>
 
-                <div style={styles.metaData}>
+                <View style={styles.metaData}>
                     <Text>Certificate number: {certNumber}</Text>  
                     <Text>Date of achievement: {certDate}</Text>  
-                </div>
+                </View>
 
                 </View>
             </Page>

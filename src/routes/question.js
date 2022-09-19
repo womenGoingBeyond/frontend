@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next'
 export default function Question() {
   const [question, setQuestion] = useState(null)
   const [quiz, setQuiz] = useState("")
+  const [answerValue, setAnswerValue] = useState("")
   const [answerState, setAnswerState] = useState({ isSubmitted: false, isCorrect: false })
   const [notificationPermitted, setNotificationPermitted] = useState(Notification.permission === 'granted')
   const [snackbarObject, setSnackbarObject] = useState({ open: false, message: '', severity: '' })
@@ -29,7 +30,13 @@ export default function Question() {
     Api.get(infoURL)
       .then(data => {
         setQuestion(data)
-        // console.log(data)
+        console.log("AAA", data)
+        setAnswerState({ isSubmitted: !!data, isCorrect: data.state })
+        data.answers.map((answer, index) => {
+            if(answer.id == data.provided_answer_ids[0]){
+              setAnswerValue(`answer-${index}`)
+            }
+          })
       })
       .catch(console.error)
       Api.get(questionsOverviewURL)
@@ -38,6 +45,12 @@ export default function Question() {
       })
       .catch(console.error)
   }, [])
+
+  const handleClick = event => {
+    setAnswerValue(event.currentTarget.value)
+    // console.log(event.currentTarget.value);
+  };
+
 
   const validateAnswer = async () => {
     let answers = document.querySelectorAll(`.${styles.quizAnswer}`),
@@ -59,6 +72,11 @@ export default function Question() {
     })
 
     if (response) {
+      if(response.data.state){
+        handleSnackbar({ open: true, message: t('correctAnswerMessage'), severity: 'success' })
+      }else{
+        handleSnackbar({ open: true, message: t('wrongAnswerMessage'), severity: 'error' })
+      }
       setAnswerState({ isSubmitted: !!response, isCorrect: response.data.state })
     } else {
       // check if backSync is active
@@ -87,21 +105,9 @@ export default function Question() {
 
   const showNotification = async ({ title = 'Hi there 👋', body }) => {
     // check for notification, if allowed, notify otherwise show snackbar
-    let notificationPermission = Notification.permission
-    if (notificationPermission === 'default') {
-      let permission = await Notification.requestPermission()
-      // Try to get the permission from user
-      if (permission === 'granted') {
-        setNotificationPermitted(true)
-        let notification = new Notification(title, { body })
-        notification.addEventListener('click', (event) => {
-          event.preventDefault()
-        })
-        return
-      } else {
+
         setSnackbarObject({ open: true, message: body, severity: 'success' })
-      }
-    }
+   
 
     if (notificationPermitted) {
       let notification = new Notification(title, { body })
@@ -114,11 +120,22 @@ export default function Question() {
     }
   }
 
+  /**
+   * The **handleSnackbar** function is a template for setting the _snackbarObject_ state.
+   *
+   * @param {boolean} open triggers the open or the close state of snackbar
+   * @param {string} message the message to be shown in UI
+   * @param {string} severity kind of message
+   */
+   function handleSnackbar({ open, message, severity }) {
+    setSnackbarObject({ open, message, severity })
+  }
+
   const handleCloseSnackbar = () => setSnackbarObject({ open: false, message: '', severity: '' })
 
   return (
     <> 
-    <Header isSubpage="true" title={quiz}/> 
+    <Header isSubpage="true" title={quiz} goBackPath={`/courses/${params.courseId}/lessons/${params.lessonId}/quizzes/${params.quizId}`}/> 
       <main>
         {question ?
           <>
@@ -129,6 +146,8 @@ export default function Question() {
                 <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     name="check"
+                    value={answerValue}
+                    onChange={handleClick}
                 >
                           
                 {question.answers.map((answer, index) =>
@@ -137,12 +156,14 @@ export default function Question() {
                             className={styles.quizAnswer}
                             id={`answer-${answer.id}`}
                           > 
+                          
 
-                  <FormControlLabel value={`answer-${index}`} control={
+                  <FormControlLabel value={`answer-${index}`} 
+                  
+                  control={
                   <Radio 
                   id={`answer-${index}`}
                   name="check"
-                  defaultChecked={question.provided_answer_ids.includes(answer.id)}
                   sx={{
                     color: "#666",
                     '&.Mui-checked': {
@@ -194,11 +215,11 @@ export default function Question() {
           :
           <CustomSkeleton/>
         }
-        {notificationPermitted ? null :
           <Snackbar
             open={snackbarObject.open}
             autoHideDuration={5000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            style={{marginTop:"60px"}}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             onClose={handleCloseSnackbar}
           >
             <Alert
@@ -209,7 +230,7 @@ export default function Question() {
               children={snackbarObject.message}
             />
           </Snackbar>
-        }
+        
       </main>
     </>
   )

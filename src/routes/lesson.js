@@ -76,7 +76,7 @@ export default function Lesson() {
     <>
 
 {lesson !== null ?
-    <Header title={lesson.Title} isSubpage="true"/>
+    <Header title={lesson.Title} isSubpage="true" goBackPath={`/courses/${params.courseId}`}/>
     : null
 }
       <main>

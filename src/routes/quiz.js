@@ -29,7 +29,7 @@ export default function Quiz() {
     <>
     
 {quiz !== null ? 
-    <Header isSubpage="true" title={quiz.title}/>
+    <Header isSubpage="true" title={quiz.title} goBackPath={`/courses/${params.courseId}/lessons/${params.lessonId}`}/>
     :null
     }
       <main>
