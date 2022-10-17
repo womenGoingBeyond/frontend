@@ -12,6 +12,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormGroup from '@mui/material/FormGroup';
 import { useTranslation } from 'react-i18next'
+import Auth from '../util/auth'
 
 export default function Question() {
   const [question, setQuestion] = useState(null)
@@ -30,7 +31,6 @@ export default function Question() {
     Api.get(infoURL)
       .then(data => {
         setQuestion(data)
-        console.log("AAA", data)
         setAnswerState({ isSubmitted: !!data, isCorrect: data.state })
         data.answers.map((answer, index) => {
             if(answer.id == data.provided_answer_ids[0]){
@@ -71,9 +71,29 @@ export default function Question() {
       'answer_ids': states
     })
 
+
     if (response) {
       if(response.data.state){
         handleSnackbar({ open: true, message: t('correctAnswerMessage'), severity: 'success' })
+
+        let apiEndpoint = `api/user-course-progresses/${params.courseId}` 
+        const fetchCourseStatus = await Api.get(apiEndpoint)
+
+        let apiEndpoint2 = `api/user-lesson-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][lesson][id][$eq]=${params.lessonId}`
+        const fetchLessonStatus = await Api.get(apiEndpoint2)
+
+        if(fetchLessonStatus.data != null && fetchLessonStatus.data[0].done){
+        //   //lesson done
+
+        //   // get lesson numbers and finished lessons in course
+        //   //redirect to lesson complete with course complete value
+            navigate(`/completedlesson/`, {
+              finishedCourse: (fetchCourseStatus.data[0].progress == 1),
+              params: params
+            })
+        //   fetchCourseStatus.data[0].progress == 1
+        }
+
       }else{
         handleSnackbar({ open: true, message: t('wrongAnswerMessage'), severity: 'error' })
       }
