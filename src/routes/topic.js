@@ -19,12 +19,10 @@ export default function Topic() {
   let params = useParams()
   let navigate = useNavigate()
 
-  const infoURL = `api/topics/${params.topicId}?locale=${i18n.language}&populate[Content][populate][Media][fields][0]=url`
-  const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
+  const infoURL = `api/topics/${params.topicId}?locale=${i18n.language}&populate[Content][populate][Media][fields][0]=url` 
   const mediaTypes = new Map([
     ['jpg', 'img'], ['jpeg', 'img'], ['png', 'img'], ['gif', 'img'], ['webp', 'img'], ['mp4', 'video'], ['mp3', 'audio']
-  ])
-
+  ]) 
   useEffect(() => {
     fetchTopicInfo()
       .then(async topic => {
@@ -90,7 +88,7 @@ export default function Topic() {
           elements.push(richEditor[block.type].generate(block.data))
         }
       } else if (content.__component.includes('media')) {
-        mediaData.src = content.URL ? content.URL : `${content.Media.url}`
+        mediaData.src = `${content.Media.url}`
         mediaData.alt = content.Caption ? content.Caption : ''
         let splitURL = mediaData.src.split('.')
         let mediaType = mediaTypes.get(splitURL[splitURL.length - 1])
