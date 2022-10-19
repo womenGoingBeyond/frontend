@@ -88,7 +88,10 @@ export default function Topic() {
           elements.push(richEditor[block.type].generate(block.data))
         }
       } else if (content.__component.includes('media')) {
-        mediaData.src = content.URL ? content.URL : `${content.Media.url}`
+        
+        console.log("content.URL",content.URL)
+        console.log("content.Media.url", content.Media.url)
+        mediaData.src = content.URL ? content.URL : content.Media.url
         mediaData.alt = content.Caption ? content.Caption : ''
         let splitURL = mediaData.src.split('.')
         let mediaType = mediaTypes.get(splitURL[splitURL.length - 1])
