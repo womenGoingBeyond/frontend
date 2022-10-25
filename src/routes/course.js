@@ -48,11 +48,13 @@ export default function Course() {
       let e = await entry
       let lesson = e[0].data
       let progress = e[1].data
-
+      console.log("e", e)
+      lesson.started = (progress.length > 0)
       lesson.done = progress.length > 0 ? progress[0].done : false
+      lesson.progress = progress
       lessonsArray.push(lesson)
     }
-
+console.log ("sjdns", lessonsArray)
     setLessons(lessonsArray)
     setCourse(course)
     courseTitle = course.Title
@@ -128,7 +130,11 @@ export default function Course() {
                     onClick={() => lessonClickHandler(lesson.id)}
                   >
                     <div>{lesson.Title}</div>
-                    <div className={(index ? styles.lightning : styles.lightning + " " + styles.empty)}/>
+
+                    {/* <div className={(index ? styles.lightning : styles.lightning + " " + styles.empty)}/> */}
+                    <div className={(lesson.started && lesson.done ? styles.lightning : styles.lightning + " " + styles.empty)}>
+                      {/*""+lesson.started */}
+                      </div>
                   </div>
                 ) : null}
               </div>

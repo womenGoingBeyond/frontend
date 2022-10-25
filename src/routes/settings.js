@@ -1,5 +1,5 @@
  
-import Auth from '../util/auth'
+import Auth from '../util/auth' 
 import { useNavigate } from 'react-router' 
 import Header from '../components/Header' 
 import mainStyles from '../styles/main.module.css'
@@ -14,6 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {  useState } from 'react'
 import SchoolIcon from '@mui/icons-material/School';
+import Api from '../util/api'
 
 import Switch from '@mui/material/Switch'; 
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -23,6 +24,7 @@ import ReactFlagsSelect from "react-flags-select";
 import { saveUserSelectedLanguage, getUserSelectedLanguage } from '../util/helper.js'
 
 export default function Settings() {
+ 
 
   const {t, i18n} = useTranslation()
   let commonData = Data.getInstance()
@@ -45,7 +47,24 @@ export default function Settings() {
     }else{
       setSelectedLanguage(language);
     }
+
+    loadAllData()
   }, [])
+
+
+
+
+async function loadAllData(){
+  const apiEndpoint = await Api.get(`api/users/me` ) 
+  console.log(apiEndpoint)
+  setUserPrename(apiEndpoint.prename != null ? apiEndpoint.prename : "")
+  setUserLastname(apiEndpoint.lastname != null ? apiEndpoint.lastname : "")
+  setLevelOfEducation(apiEndpoint.levelOfEducation != null ? apiEndpoint.levelOfEducation : "") 
+
+  const time2 = new Date(parseInt(apiEndpoint.birthdayNumber,10));
+  setValue(time2)
+}
+
 
     function logoutUser() {
       let isUserLogout = Auth.logout()
@@ -54,8 +73,20 @@ export default function Settings() {
     }
 
 
-    function saveChanges(){
+    async function saveChanges(){
+      console.log(value)
       setDataChanged(false)
+
+      var body = {
+        "birthdayNumber": value.getTime(),
+        "prename": prename,
+        "lastname": lastname,
+        
+      };
+    const apiEndpoint2 = await Api.put(`api/users/${Auth.getUserIdFromJWT()}`, body ) 
+    console.log("AAAA", apiEndpoint2)
+    
+      
     }
      
  
