@@ -45,7 +45,7 @@ export default function Register() {
     if (Object.keys(response).includes('error')) {
       handleSnackbar({open: true, id: 'input', message: response.error.message, severity: 'error'})
     } else {
-      loginUser({ email: "demo@demo.de", password: "demodemo" }).catch(console.error)
+      loginUser({ email: emailRef.current.value.trim(), password: passwordRef.current.value }).catch(console.error)
     }
   }
 

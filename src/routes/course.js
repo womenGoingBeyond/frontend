@@ -37,6 +37,12 @@ export default function Course() {
     .catch(console.error)
 
 
+
+    Api.get(`api/user-course-progresses/${course.id}`)
+    .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
+    .catch(console.error)
+
+
     // fetch lesson info in parallel
     let lessonEntries = course.lessons.map(async lesson => {
       let lessonResponse = await Api.get(`api/lessons/${lesson.id}?locale=${i18n.language}&populate[Content][populate][Media][fields][0]=url`)
@@ -49,11 +55,13 @@ export default function Course() {
       let e = await entry
       let lesson = e[0].data
       let progress = e[1].data
-
+      console.log("e", e)
+      lesson.started = (progress.length > 0)
       lesson.done = progress.length > 0 ? progress[0].done : false
+      lesson.progress = progress
       lessonsArray.push(lesson)
     }
-
+console.log ("sjdns", lessonsArray)
     setLessons(lessonsArray)
     setCourse(course)
     courseTitle = course.Title
@@ -129,8 +137,11 @@ export default function Course() {
                     onClick={() => lessonClickHandler(lesson.id)}
                   >
                     <div>{lesson.Title}</div>
+
                     {/* <div className={(index ? styles.lightning : styles.lightning + " " + styles.empty)}/> */}
-                    <div className={( styles.lightning + " " + styles.empty)}/>
+                    <div className={(lesson.started && lesson.done ? styles.lightning : styles.lightning + " " + styles.empty)}>
+                      {/*""+lesson.started */}
+                      </div>
                   </div>
                 ) : null}
               </div>

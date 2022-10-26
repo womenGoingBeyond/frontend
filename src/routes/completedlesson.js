@@ -20,8 +20,6 @@ export default function CompletedLesson() {
     function goBack(){
         navigate(-1)
     }
-
-
   return (
     <>
     <Header title={t('completedLessonHeader')} isSubpage="true" showSettingsIcon="true"/>
