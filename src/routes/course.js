@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 export default function Course() {
   const [course, setCourse] = useState(null)
   const [progress, setProgress] = useState(0)
+  const [category, setCategory] = useState(0)
   const [lessons, setLessons] = useState([])
   const params = useParams()
   const navigate = useNavigate()
@@ -29,6 +30,12 @@ export default function Course() {
   const fetchCourseInfo = async () => {
     let response = await Api.get(overviewURL)
     let course = response.data
+    setCategory(await Api.get(`api/courses/${params.courseId}?locale=${i18n.language}&populate=*`))
+
+    Api.get(`api/user-course-progresses/${course.id}`)
+    .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
+    .catch(console.error)
+
 
 
     Api.get(`api/user-course-progresses/${course.id}`)
@@ -86,7 +93,7 @@ console.log ("sjdns", lessonsArray)
     <>
 
 {course !== null ?
-    <Header title={course.Title} isSubpage="true"/>
+    <Header title={course.Title} isSubpage="true" goBackPath={`/courses/`} goBackState={category.data.category.id} />
     : null
 }
       <main>

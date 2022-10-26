@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import { Alert, Button, Snackbar } from '@mui/material'
 import CustomSkeleton from '../components/CustomSkeleton'
 import { useTranslation } from 'react-i18next'
+import Auth from '../util/auth'
 
 export default function Topic() {
   const [topic, setTopic] = useState(null)
@@ -19,11 +20,9 @@ export default function Topic() {
   let navigate = useNavigate()
 
   const infoURL = `api/topics/${params.topicId}?locale=${i18n.language}&populate[Content][populate][Media][fields][0]=url`
-  const cmsURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_LMS_DOMAIN : process.env.REACT_APP_DEV_LMS_DOMAIN
   const mediaTypes = new Map([
     ['jpg', 'img'], ['jpeg', 'img'], ['png', 'img'], ['gif', 'img'], ['webp', 'img'], ['mp4', 'video'], ['mp3', 'audio']
   ])
-
   useEffect(() => {
     fetchTopicInfo()
       .then(async topic => {
@@ -89,7 +88,10 @@ export default function Topic() {
           elements.push(richEditor[block.type].generate(block.data))
         }
       } else if (content.__component.includes('media')) {
-        mediaData.src = content.URL ? content.URL : `${cmsURL}${content.Media.url}`
+        
+        console.log("content.URL",content.URL)
+        console.log("content.Media.url", content.Media.url)
+        mediaData.src = content.URL ? content.URL : content.Media.url
         mediaData.alt = content.Caption ? content.Caption : ''
         let splitURL = mediaData.src.split('.')
         let mediaType = mediaTypes.get(splitURL[splitURL.length - 1])
@@ -103,6 +105,7 @@ export default function Topic() {
     let response = await Api.post(`api/topics/${params.topicId}/complete?locale=${i18n.language}&`, {
       data: { 'done': true }
     })
+
 
     if (response) {
       navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
@@ -125,6 +128,33 @@ export default function Topic() {
         navigate(`/courses/${params.courseId}/lessons/${params.lessonId}`)
       }
     }
+
+ 
+  // TODO AUCH BEI QUIZ
+          let apiEndpoint = `api/user-course-progresses/${params.courseId}` 
+          const fetchCourseStatus = await Api.get(apiEndpoint)
+ 
+          let apiEndpoint2 = `api/user-lesson-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][lesson][id][$eq]=${params.lessonId}`
+          const fetchLessonStatus = await Api.get(apiEndpoint2)
+          console.log(params.lessonId);
+
+          if(fetchLessonStatus.data != null && fetchLessonStatus.data[0].done){
+          //   //lesson done
+
+          //   // get lesson numbers and finished lessons in course
+          //   //redirect to lesson complete with course complete value
+              navigate(`/completedlesson/`, {
+                state: "BBBBBB",
+              })
+          //   fetchCourseStatus.data[0].progress == 1
+          }
+
+
+
+
+
+
+
   }
 
   const showNotification = async ({ title = 'Hi there 👋', body }) => {

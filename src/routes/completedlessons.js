@@ -6,7 +6,6 @@ import Header from '../components/Header'
 import ProgressProvider from "../components/ProgressProvider";
 import "react-circular-progressbar/dist/styles.css";
 import { useTranslation } from 'react-i18next';
-import {useLocation} from 'react-router-dom';
 
 import {
   CircularProgressbar,
@@ -22,8 +21,6 @@ export default function CompletedLessons() {
         navigate(-1)
     }
 
-    const location = useLocation();
-    console.log("AAA", location.state)
 
   return (
     <>

@@ -24,7 +24,6 @@ import ReactFlagsSelect from "react-flags-select";
 import { saveUserSelectedLanguage, getUserSelectedLanguage } from '../util/helper.js'
 
 export default function Settings() {
- 
 
   const {t, i18n} = useTranslation()
   let commonData = Data.getInstance()
