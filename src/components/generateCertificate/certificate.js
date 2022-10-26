@@ -80,6 +80,7 @@ const Certificate = ({ category, course , nameOfStudent, certNumber, certDate}) 
                     
                 <Image style={styles.backgroundImage} src={backgroundImage} >
                 </Image> 
+
                 <View style={styles.mainContent} >
 
                 <View style={styles.bigText} >

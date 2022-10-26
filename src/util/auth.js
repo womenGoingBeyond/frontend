@@ -34,7 +34,7 @@ export default class Auth {
         'email': email,
         'username': email.replace('@', '_'),
         'password': password,
-        'blocked': true
+        'blocked': false
       })
     })
     console.log("response", response);
