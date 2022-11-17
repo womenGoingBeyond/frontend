@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 export default function Course() {
   const [course, setCourse] = useState(null)
   const [progress, setProgress] = useState(0)
+  const [maxProgress, setMaxProgress] = useState(0)
   const [category, setCategory] = useState(0)
   const [lessons, setLessons] = useState([])
   const params = useParams()
@@ -33,13 +34,16 @@ export default function Course() {
     setCategory(await Api.get(`api/courses/${params.courseId}?locale=${i18n.language}&populate=*`))
 
     Api.get(`api/user-course-progresses/${course.id}`)
-    .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
-    .catch(console.error)
-
-
-
-    Api.get(`api/user-course-progresses/${course.id}`)
-    .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
+    .then(response => {
+      if(response.data.length > 0){
+        setProgress(response.data[0].progress)
+        setMaxProgress(response.data[0].maxCourseProgress)
+      }
+      else{
+        setProgress(0)
+        setMaxProgress(0)
+      }
+    })
     .catch(console.error)
 
 
@@ -104,9 +108,9 @@ console.log ("sjdns", lessonsArray)
           <div className={styles.header}>
           <h4>{course.Title}</h4>
          <p className={styles.courseProgress}>
-            <div className={styles.progress}> {progress}/100% <div className={styles.lightning}/></div>
+            <div className={styles.progress}> {progress}/{maxProgress} <div className={styles.lightning}/></div>
          
-          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress} /></p> 
+          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress/maxProgress*100} /></p> 
           </div>
               <div className={styles.img}>
                 <img
@@ -154,3 +158,4 @@ console.log ("sjdns", lessonsArray)
     </>
   )
 }
+

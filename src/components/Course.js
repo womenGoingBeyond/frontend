@@ -1,3 +1,4 @@
+
 import PropTypes from 'prop-types'
 import styles from '../styles/components/Course.module.css'
 import { useEffect, useState } from 'react'
@@ -13,6 +14,7 @@ import { useLoading }  from '../components/LoadingContext'
 
 export default function Course({ course, keyValue, userCourse, cacheName }) {
   const [progress, setProgress] = useState(0)
+  const [maxProgress, setMaxProgress] = useState(0)
   const [showMore, setShowMore] = useState(false)
   const [isUserCourse, setIsUserCourse] = useState(userCourse)
   const [isCourseDownloaded, setIsCourseDownloaded] = useState(false)
@@ -60,7 +62,15 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
 
   const fetchCourseProgress = () => {
     return Api.get(`api/user-course-progresses/${course.id}`)
-      .then(response => setProgress(response.data.length > 0 ? response.data[0].progress * 100 : 0))
+      .then(response => {
+        if(response.data.length > 0){
+          setProgress(response.data[0].progress)
+          setMaxProgress(response.data[0].maxCourseProgress)
+        }
+        else{
+          setProgress(0)
+          setMaxProgress(0)
+        }})
       .catch(console.error)
   }
 
@@ -130,9 +140,9 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           <div className={styles.header}>
           <h4>{course.Title}</h4>
          <p className={styles.courseProgress}>
-            <div className={styles.progress}> {progress}/100% <div className={styles.lightning}/></div>
+            <div className={styles.progress}> {progress}/{maxProgress} <div className={styles.lightning}/></div>
          
-          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress} /></p> 
+          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress/maxProgress*100} /></p> 
           </div>
           <div className={styles.img}>
             <img
@@ -181,9 +191,9 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
         <div className={styles.header}>
           <h4>{course.Title}</h4>
          <p className={styles.courseProgress}>
-            <div className={styles.progress}> {progress}/100% <div className={styles.lightning}/></div>
+            <div className={styles.progress}> {progress}/{maxProgress} <div className={styles.lightning}/></div>
          
-          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress} /></p>
+          <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress/maxProgress*100} /></p>
           </div> 
         </div>
       }
@@ -197,3 +207,4 @@ Course.propTypes = {
   cacheName: PropTypes.string.isRequired,
   keyValue: PropTypes.number
 }
+
