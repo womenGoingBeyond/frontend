@@ -64,8 +64,6 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     return Api.get(`api/user-course-progresses/${course.id}`)
       .then(response => {
         if(response.data.length > 0){
-          console.log("progress: " + response.data[0].progress);
-          console.log("MaxLessons: " + response.data[0].maxCourseProgress);
           setProgress(response.data[0].progress)
           setMaxProgress(response.data[0].maxCourseProgress)
         }
@@ -142,7 +140,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           <div className={styles.header}>
           <h4>{course.Title}</h4>
          <p className={styles.courseProgress}>
-            <div className={styles.progress}> {progress}/{maxProgress} <div className={styles.lightning}/></div>
+            <div className={styles.progress}> {progress}/{15} <div className={styles.lightning}/></div>
          
           <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress/maxProgress*100} /></p> 
           </div>
