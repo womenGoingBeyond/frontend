@@ -64,6 +64,8 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     return Api.get(`api/user-course-progresses/${course.id}`)
       .then(response => {
         if(response.data.length > 0){
+          console.log("progress: " + response.data[0].progress);
+          console.log("MaxLessons: " + response.data[0].maxCourseProgress);
           setProgress(response.data[0].progress)
           setMaxProgress(response.data[0].maxCourseProgress)
         }
