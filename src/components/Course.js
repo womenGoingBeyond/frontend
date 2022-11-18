@@ -140,7 +140,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
           <div className={styles.header}>
           <h4>{course.Title}</h4>
          <p className={styles.courseProgress}>
-            <div className={styles.progress}> {progress}/{setMaxProgress} <div className={styles.lightning}/></div>
+            <div className={styles.progress}> {progress}/{maxProgress} <div className={styles.lightning}/></div>
          
           <BorderLinearProgress className={styles.linearProgress} variant="determinate" value={progress/maxProgress*100} /></p> 
           </div>
