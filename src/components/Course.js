@@ -1,3 +1,4 @@
+
 import PropTypes from 'prop-types'
 import styles from '../styles/components/Course.module.css'
 import { useEffect, useState } from 'react'
@@ -206,3 +207,4 @@ Course.propTypes = {
   cacheName: PropTypes.string.isRequired,
   keyValue: PropTypes.number
 }
+

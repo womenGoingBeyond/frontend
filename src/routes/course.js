@@ -65,7 +65,7 @@ export default function Course() {
       lesson.progress = progress
       lessonsArray.push(lesson)
     }
-console.log ("sjdns", lessonsArray)
+    
     setLessons(lessonsArray)
     setCourse(course)
     courseTitle = course.Title
@@ -158,3 +158,4 @@ console.log ("sjdns", lessonsArray)
     </>
   )
 }
+
