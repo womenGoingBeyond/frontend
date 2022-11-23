@@ -20,7 +20,7 @@
 
     "categoriesHeader": "Categories",
     "completedLessonHeader": "Lesson Completed",
-    "completedLessonsHeader": "Lessons Completed",
+    "completedLessonsHeader": "Course Completed",
     "myClassesHeader": "My Classes",
     "myProfileHeader": "My Profile",
     "settingsHeader": "Settings",
@@ -48,10 +48,13 @@
     "exploreTabLabel": "Explore",
     "myClassesTabLabel": "My Classes",
     "profileTabLabel": "Profile",
+    "getZertificates": "Get your Certificate",
 
 
 
     "correctAnswerMessage": "Gratulation! This answer is correct.",
+    "messageGratulation": "Well done!",
+    "messageGratulationCourse": "Course completed",
     "wrongAnswerMessage": "This answer is wrong. Please try again!"
 
     

@@ -88,9 +88,6 @@ export default function Topic() {
           elements.push(richEditor[block.type].generate(block.data))
         }
       } else if (content.__component.includes('media')) {
-        
-        console.log("content.URL",content.URL)
-        console.log("content.Media.url", content.Media.url)
         mediaData.src = content.URL ? content.URL : content.Media.url
         mediaData.alt = content.Caption ? content.Caption : ''
         let splitURL = mediaData.src.split('.')
@@ -130,23 +127,25 @@ export default function Topic() {
     }
 
  
-  // TODO AUCH BEI QUIZ
           let apiEndpoint = `api/user-course-progresses/${params.courseId}` 
           const fetchCourseStatus = await Api.get(apiEndpoint)
  
           let apiEndpoint2 = `api/user-lesson-states?filters[$and][0][users_permissions_user][id][$eq]=${Auth.getUserIdFromJWT()}&filters[$and][1][lesson][id][$eq]=${params.lessonId}`
           const fetchLessonStatus = await Api.get(apiEndpoint2)
-          console.log(params.lessonId);
+          // console.log(params.lessonId);
 
           if(fetchLessonStatus.data != null && fetchLessonStatus.data[0].done){
           //   //lesson done
 
           //   // get lesson numbers and finished lessons in course
           //   //redirect to lesson complete with course complete value
-              navigate(`/completedlesson/`, {
-                state: "BBBBBB",
-              })
-          //   fetchCourseStatus.data[0].progress == 1
+
+            navigate(`/completedlesson/`, {
+              state: {
+                finishedCourse: (fetchCourseStatus.data[0].progress == 1),
+                params: params
+              }
+            })
           }
 
 

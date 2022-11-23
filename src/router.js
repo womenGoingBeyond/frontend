@@ -16,7 +16,6 @@ import MyClasses from './routes/myclasses'
 import Question from './routes/question'
 import Welcome from './routes/welcome'
 import CompletedLesson from './routes/completedlesson'
-import CompletedLessons from './routes/completedlessons'
 import Navigation from './Navigation';
 import LoadingProvider from "./components/LoadingContext"; /// import loader hook
 
@@ -31,7 +30,6 @@ export default function router() {
       <Route path="welcome" element={<Welcome/>}/>
       <Route path={'myclasses'} element={<AuthMiddleware><MyClasses/><Navigation /></AuthMiddleware>}/>
       <Route path={'completedlesson'} element={<AuthMiddleware><CompletedLesson/><Navigation /></AuthMiddleware>}/>
-      <Route path={'completedlessons'} element={<AuthMiddleware><CompletedLessons/><Navigation /></AuthMiddleware>}/>
       <Route path={'profile'} element={<AuthMiddleware><Profile/><Navigation /></AuthMiddleware>}/>
       <Route path={'settings'} element={<AuthMiddleware><Settings/><Navigation /></AuthMiddleware>}/>
       <Route path={'categories'} element={<AuthMiddleware><Categories/><Navigation /></AuthMiddleware>}/>
