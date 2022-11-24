@@ -87,6 +87,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
         setProgress(isDoneTrue)
       }
     }).catch(console.error)
+
   }
 
   const showMoreHandler = () => setShowMore(prevState => !prevState)

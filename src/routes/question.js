@@ -88,8 +88,10 @@ export default function Question() {
         //   // get lesson numbers and finished lessons in course
         //   //redirect to lesson complete with course complete value
             navigate(`/completedlesson/`, {
-              finishedCourse: (fetchCourseStatus.data[0].progress == 1),
-              params: params
+              state: {
+                finishedCourse: (fetchCourseStatus.data[0].progress == 1),
+                params: params
+              }
             })
         //   fetchCourseStatus.data[0].progress == 1
         }

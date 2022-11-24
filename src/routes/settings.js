@@ -69,6 +69,16 @@ async function loadAllData(){
       let isUserLogout = Auth.logout()
       isUserLogout && navigate('/')
       commonData.clearAllUserData()
+
+
+      // navigate(`/completedlesson/`, {
+      //   state: {
+      //     finishedCourse: true,
+      //     params: 23432
+      //   }
+      // })
+
+
     }
 
 

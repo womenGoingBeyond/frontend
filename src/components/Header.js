@@ -14,8 +14,6 @@ export default function Header ({ isSubpage = false, title = "" , showSettingsIc
   }
 
   function routerGoBack() {
-    console.log(goBackPath)
-    console.log(goBackState)
     if(goBackState!=0){
       navigate(goBackPath, {
         state: goBackState,

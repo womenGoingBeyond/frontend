@@ -17,7 +17,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // set defaul Language 
     var language = getUserSelectedLanguage();
-    if(language == ""){
+    if(language == null || language == ""){
       setSelectedLanguage("KH");
     }else{
       setSelectedLanguage(language);

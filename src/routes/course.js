@@ -144,10 +144,17 @@ export default function Course() {
                   >
                     <div>{lesson.Title}</div>
 
-                    {/* <div className={(index ? styles.lightning : styles.lightning + " " + styles.empty)}/> */}
-                    <div className={(lesson.started && lesson.done ? styles.lightning : styles.lightning + " " + styles.empty)}>
-                      {/*""+lesson.started */}
-                      </div>
+                    {lesson.started && !lesson.done ?
+                      <div className={(styles.lightning + " " + styles.half)}/>
+                    : null}
+
+                    {lesson.started && lesson.done ?
+                      <div className={(styles.lightning)}/>
+                    : null}
+
+                    {!lesson.started && !lesson.done ?
+                      <div className={(styles.lightning + " " + styles.empty)}/>
+                    : null}
                   </div>
                 ) : null}
               </div>

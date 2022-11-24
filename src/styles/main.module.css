@@ -52,6 +52,26 @@
     background-position: center;
     background-size: contain;
   }
+
+
+  .messageIMG {
+    width: 80%;
+    height: 100px;
+    margin-top:0px;
+    margin-bottom:0px;
+    background-image: url("../img/messageIMG.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    text-align: center;
+    font-size: 16pt;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  
   
   .logoStart {
     width: 20%;
@@ -107,4 +127,34 @@
  
 .hidden{
   display:none!important;
+}
+
+
+.fadeOut{
+  opacity:0;
+  transition: opacity 0.5s;
+
+}
+.fadeIn{
+  opacity:1;
+  transition: opacity 0.5s 0.5s;
+
+
+}
+
+.addition{
+  position: absolute;
+  font-size: 30pt;
+  display: flex;
+  align-items: center;
+  top:180px;
+}
+
+.lightning{
+  width: 45px;
+  height: 70px;
+  background-image: url("../img/Blitz_color.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }

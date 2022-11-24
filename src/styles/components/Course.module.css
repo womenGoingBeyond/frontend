@@ -206,7 +206,6 @@
   background-size: contain;
 }
 
-
 .lesson .lightning{
   width: 21px;
 height: 33px;
@@ -218,7 +217,7 @@ right: 30px;
   background-image: url("../../img/Blitz_bw.svg");
 }
 .lesson .half{
-  background-image: url("../../img/Blitz_color.svg");
+  background-image: url("../../img/half_lightning.svg");
 }
 
 
