@@ -33,18 +33,20 @@ export default function Course() {
     let course = response.data
     setCategory(await Api.get(`api/courses/${params.courseId}?locale=${i18n.language}&populate=*`))
 
-    Api.get(`api/user-course-progresses/${course.id}`)
-    .then(response => {
+    Api.get(`api/user-lesson-states/${course.id}`)
+    .then( response => {
       if(response.data.length > 0){
-        setProgress(response.data[0].progress)
-        setMaxProgress(response.data[0].maxCourseProgress)
+        setMaxProgress(response.data.length)
+
+        var isDoneTrue = 0
+        response.data.forEach(lessonState => {
+          if(lessonState.done){
+            isDoneTrue++
+          }
+        })
+        setProgress(isDoneTrue)
       }
-      else{
-        setProgress(0)
-        setMaxProgress(0)
-      }
-    })
-    .catch(console.error)
+    }).catch(console.error)
 
 
     // fetch lesson info in parallel
