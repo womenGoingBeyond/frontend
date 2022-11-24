@@ -99,7 +99,7 @@ export default function Topic() {
   }
 
   const markTopicAsDone = async () => {
-    let response = await Api.post(`api/topics/${params.topicId}/complete?locale=${i18n.language}&`, {
+    let response = await Api.post(`api/topics/${params.topicId}/complete?locale=${i18n.language}`, {
       data: { 'done': true }
     })
 

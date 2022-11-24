@@ -36,7 +36,7 @@ export default function Course() {
     Api.get(`api/user-lesson-states/${course.id}`)
     .then( response => {
       if(response.data.length > 0){
-        setMaxProgress(response.data.length)
+        setMaxProgress(course.lessons.length)
 
         var isDoneTrue = 0
         response.data.forEach(lessonState => {

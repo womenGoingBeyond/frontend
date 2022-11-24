@@ -40,7 +40,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     //Load maxProgress possible of every course (Number of lessons designated to the course)
     Api.get(`api/lessons/${course.id}/allLessons`)
     .then( response => {
-      if(response.data.length > 0){
+      if(response.data != null && response.data.length > 0){
 
         setMaxProgress(response.data.length)
 
@@ -76,7 +76,7 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
     //Get all LessonsState of courseID
     return Api.get(`api/user-lesson-states/${course.id}`)
     .then( response => {
-      if(response.data.length > 0){
+      if(response.data != null && response.data.length > 0){
         
         var isDoneTrue = 0
         response.data.forEach(lessonState => {
