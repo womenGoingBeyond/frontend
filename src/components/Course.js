@@ -36,6 +36,17 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
   }, [])
 
   useEffect(() => {
+
+    //Load maxProgress possible of every course (Number of lessons designated to the course)
+    Api.get(`api/lessons/${course.id}/allLessons`)
+    .then( response => {
+      if(response.data.length > 0){
+
+        setMaxProgress(response.data.length)
+
+      }
+    }).catch(console.error)
+
     if (isUserCourse) {
       fetchCourseProgress()
         .catch(console.error)
@@ -61,17 +72,21 @@ export default function Course({ course, keyValue, userCourse, cacheName }) {
   const updateDownloadState = (state) => setIsCourseDownloaded(state)
 
   const fetchCourseProgress = () => {
-    return Api.get(`api/user-course-progresses/${course.id}`)
-      .then(response => {
-        if(response.data.length > 0){
-          setProgress(response.data[0].progress)
-          setMaxProgress(response.data[0].maxCourseProgress)
-        }
-        else{
-          setProgress(0)
-          setMaxProgress(0)
-        }})
-      .catch(console.error)
+
+    //Get all LessonsState of courseID
+    return Api.get(`api/user-lesson-states/${course.id}`)
+    .then( response => {
+      if(response.data.length > 0){
+        
+        var isDoneTrue = 0
+        response.data.forEach(lessonState => {
+          if(lessonState.done){
+            isDoneTrue++
+          }
+        })
+        setProgress(isDoneTrue)
+      }
+    }).catch(console.error)
   }
 
   const showMoreHandler = () => setShowMore(prevState => !prevState)
