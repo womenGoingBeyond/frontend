@@ -23,7 +23,7 @@ export default function MyClasses() {
             Api.get(`api/certificate/${userEndpoint.id}/allCertificates`)
             .then( async response => {
               console.log('response', response);
-              if(response.data.length > 0){
+              if(response.data != null && response.data.length > 0){
                 console.log("response.data", response.data);
                 setAllCertificates(response.data)
               }
