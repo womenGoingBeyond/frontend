@@ -2,8 +2,7 @@ import mainStyles from '../styles/main.module.css'
 import Header from '../components/Header'
 import { useTranslation } from 'react-i18next'
 import Certificate from '../components/generateCertificate/certificate';
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import Data from '../util/data.js'
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import Api from '../util/api' 
 import {useEffect} from 'react'
 import {  useState } from 'react'
@@ -12,16 +11,7 @@ import CustomButton from '../components/CustomButton'
 
 export default function MyClasses() {
   const {t, i18n} = useTranslation()
-  let commonData = Data.getInstance()
   const [allCertificates, setAllCertificates] = useState([])  
-
-
-  // const fileName = "Certificat-Name.pdf";
-        // LIST ALL CERTIFICATES
-        // KLICK ON CERTIFICATE GENERATES THE PDF
-        // DATA FROM CERTIFICATE: ID, COURSEID, USERID, CREATEDAT
-        // USER DATA from USERID: NAME 
-        // COURSE DATA from COURSEID
 
 
         useEffect(() => {   
@@ -49,7 +39,7 @@ export default function MyClasses() {
       <div className={mainStyles.container}>
 
 
-      {allCertificates.length > 0 ? allCertificates.map((oneCertificate, index) =>
+      {allCertificates != null && allCertificates.length > 0 ? allCertificates.map((oneCertificate, index) =>
         <div
           // className={styles.lesson}
           // onClick={() => lessonClickHandler(lesson.id)}
