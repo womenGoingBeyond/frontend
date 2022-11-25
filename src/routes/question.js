@@ -19,7 +19,6 @@ export default function Question() {
   const [quiz, setQuiz] = useState("")
   const [answerValue, setAnswerValue] = useState("")
   const [answerState, setAnswerState] = useState({ isSubmitted: false, isCorrect: false })
-  const [notificationPermitted, setNotificationPermitted] = useState(Notification.permission === 'granted')
   const [snackbarObject, setSnackbarObject] = useState({ open: false, message: '', severity: '' })
   const {t, i18n} = useTranslation()
 
@@ -104,13 +103,6 @@ export default function Question() {
       // check if backSync is active
       let swRegistration = await navigator.serviceWorker.ready
       let tags = await swRegistration.sync.getTags()
-      for (let tag of tags) {
-        if (tag.includes(`QUESTION_${params.questionId}_ANSWERED`)) {
-          showNotification({ body: 'There is no connectivity. But dont worry we take care of it 😉' })
-            .catch(console.error)
-          break
-        }
-      }
 
       // check for downloaded course, if yes, simulate the completed topic
       const hasCache = await caches.has(`dl-course-${params.courseId}`)
@@ -123,23 +115,6 @@ export default function Question() {
 
   const backToQuizOverview = () => {
     navigate(`/courses/${params.courseId}/lessons/${params.lessonId}/quizzes/${params.quizId}`)
-  }
-
-  const showNotification = async ({ title = 'Hi there 👋', body }) => {
-    // check for notification, if allowed, notify otherwise show snackbar
-
-        setSnackbarObject({ open: true, message: body, severity: 'success' })
-   
-
-    if (notificationPermitted) {
-      let notification = new Notification(title, { body })
-      notification.addEventListener('click', (event) => {
-        event.preventDefault()
-        console.log('click on notification')
-      })
-    } else {
-      setSnackbarObject({ open: true, message: body, severity: 'success' })
-    }
   }
 
   /**
