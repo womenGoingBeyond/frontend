@@ -10,11 +10,11 @@ import {  useState } from 'react'
 import CustomButton from '../components/CustomButton'
 import CompletedCourse from '../components/completedCourse'
 
-
 export default function MyClasses() {
   const {t, i18n} = useTranslation()
   let commonData = Data.getInstance()
-  const [allCertificates, setAllCertificates] = useState([])  
+  const [allCertificates, setAllCertificates] = useState([]) 
+  const [loading, setLoading] = useState(false); 
 
 
   // const fileName = "Certificat-Name.pdf";
@@ -30,6 +30,7 @@ export default function MyClasses() {
         }, [])
       
         async function loadAllData(){
+          setLoading(true);
           const userEndpoint = await Api.get(`api/users/me` ) 
             Api.get(`api/certificate/${userEndpoint.id}/allCertificates`)
             .then( async response => {
@@ -39,47 +40,39 @@ export default function MyClasses() {
                 setAllCertificates(response.data)
               }
             }).catch(console.error)
+            setLoading(false);
         }  
 
+        return (
+          <>
+            <Header title={t("myClassesHeader")} isSubpage="true"/>
+        
+            <main>
+              <h1>{t("myClassesCompleted")}</h1>
+              <ul style={{listStyleType:"none",padding: "0"}}>
 
-  return (
-    <>
-    <Header title={t("myClassesHeader")} isSubpage="true"/>
+              {!loading && allCertificates.length > 0 ? allCertificates.map((oneCertificate, index) => {
 
-    <main>
-    <div className={mainStyles.container}>
+                return <li key={index}>
+                  <div style={{padding:"50px",}}>
+                    <CompletedCourse certInfo={{
+                        certName:oneCertificate.course.category.Name, 
+                        certTitle: oneCertificate.course.Title,
+                        nameOfStudentPrename:oneCertificate.users_permissions_user.prename,
+                        nameOfStudentLastname:oneCertificate.users_permissions_user.lastname,
+                        certNumber:oneCertificate.id,
+                        certDate:oneCertificate.createdAt
+                        }}></CompletedCourse>
+                  </div>
+              </li>
+              }
+             
+          ) : null}
+             {loading && <p>Loading..</p>}          
+              </ul>
+          </main>
+          
+        </>
+        )
 
-
-{allCertificates.length > 0 ? allCertificates.map((oneCertificate, index) =>
-  <div
-    // className={styles.lesson}
-    // onClick={() => lessonClickHandler(lesson.id)}
-  >
-     
-       <PDFDownloadLink
-          document={<Certificate  category={oneCertificate.course.category.Name} course={oneCertificate.course.Title} nameOfStudent={oneCertificate.users_permissions_user.prename + " " + oneCertificate.users_permissions_user.lastname} certNumber={String(oneCertificate.id).padStart(6, '0')} certDate={oneCertificate.createdAt} />}
-          fileName={"AAA"}
-        >
-          {({ blob, url, loading, error }) =>
-            loading ? "Loading..." : 
-                            
-                  <CustomButton 
-                      children={
-                        <>
-                          <div>
-                            {t("Course") + ": " + oneCertificate.course.category.Name + " -> " + oneCertificate.course.Title}
-                          </div>
-                        </>
-                      }
-                    />
-          }
-        </PDFDownloadLink>
-  </div>
-) : null}
-<CompletedCourse></CompletedCourse>
-</div>
-    </main>
-    
-    </>
-  )
 }

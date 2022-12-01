@@ -1,4 +1,34 @@
-img {
-    width: 100px;
-    height: 100px;
+.Wrapper{
+    position: relative;
+    height: 350px;
+    width: 400px;
+    background-color: red;
+}
+
+.PictureAndIcon{
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.PictureAndIcon img{
+    height: 100%;
+    width: 100%;
+
+}
+
+.Icon{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    font-size: 30px;
+}
+
+.Text{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    color: white;
+    font-size: 30px;
 }
