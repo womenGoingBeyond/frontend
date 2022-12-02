@@ -55,9 +55,9 @@
     "correctAnswerMessage": "Gratulation! This answer is correct.",
     "messageGratulation": "Well done!",
     "messageGratulationCourse": "Course completed",
-    "wrongAnswerMessage": "This answer is wrong. Please try again!"
+    "wrongAnswerMessage": "This answer is wrong. Please try again!",
 
-    
+    "myClassesCompleted": "Completed"
     
 
     

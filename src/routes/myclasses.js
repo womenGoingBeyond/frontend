@@ -1,4 +1,4 @@
-import mainStyles from '../styles/main.module.css'
+import mainStyles from '../styles/components/CompletedCourse.module.css'
 import Header from '../components/Header'
 import { useTranslation } from 'react-i18next'
 import Certificate from '../components/generateCertificate/certificate';
@@ -45,16 +45,19 @@ export default function MyClasses() {
 
         return (
           <>
-            <Header title={t("myClassesHeader")} isSubpage="true"/>
-        
+    
+            <Header  title={t("myClassesHeader")} isSubpage="true"/>
+            
             <main>
-              <h1>{t("myClassesCompleted")}</h1>
+              <div className={mainStyles.CertHeader}>
+                <h1>{t("myClassesCompleted")}</h1>
+              </div>
               <ul style={{listStyleType:"none",padding: "0"}}>
 
               {!loading && allCertificates.length > 0 ? allCertificates.map((oneCertificate, index) => {
 
                 return <li key={index}>
-                  <div style={{padding:"50px",}}>
+                  <section className={mainStyles.Certificates}>
                     <CompletedCourse certInfo={{
                         certName:oneCertificate.course.category.Name, 
                         certTitle: oneCertificate.course.Title,
@@ -63,7 +66,7 @@ export default function MyClasses() {
                         certNumber:oneCertificate.id,
                         certDate:oneCertificate.createdAt
                         }}></CompletedCourse>
-                  </div>
+                  </section>
               </li>
               }
              

@@ -1,34 +1,51 @@
-.Wrapper{
-    position: relative;
-    height: 350px;
-    width: 400px;
-    background-color: red;
-}
-
-.PictureAndIcon{
-    position: relative;
-    height: 100%;
+.PDFWrapper{
     width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top:10px;
+    cursor:pointer;
+    color:#fff;-webkit-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.31);
+    -moz-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.31);
+    box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.31);
+    background-color: #ce6328;
+    opacity: 0.85;
+
 }
 
-.PictureAndIcon img{
-    height: 100%;
+.WrapperText{
+    float: left;
+}
+
+.PDFWrapper a{
+    text-decoration:none;
+}
+
+.DownloadIcon{
+    float: right;
+    transform: scale(1.4);
+    color: white;
+}
+
+.PDFWrapper h3{
+    font-weight: 600;
+    font-size: 16pt;
+    text-align: left;
     width: 100%;
-
+    color: white;
 }
 
-.Icon{
-    position: absolute;
-    top: 5px;
-    right: 5px;
+.PDFWrapper p{
     color: white;
-    font-size: 30px;
 }
 
-.Text{
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    color: white;
-    font-size: 30px;
+.Certificates{
+    display: flex;
+    width: 95vw;
+    align-items: center;
+}
+
+.CertHeader{
+    display: flex;
+    width: 95vw;
+    padding-top: 10px;
 }

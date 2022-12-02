@@ -46,7 +46,9 @@
 
     "exploreTabLabel": "រុករក",
     "myClassesTabLabel": "ថ្នាក់របស់ខ្ញុំ",
-    "profileTabLabel": "ប្រវត្តិរូប"
+    "profileTabLabel": "ប្រវត្តិរូប",
+
+    "myClassesCompleted": "KhmerCompleted"
 
     
 }
